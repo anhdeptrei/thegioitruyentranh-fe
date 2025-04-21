@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ProSidebar, Menu, MenuItem } from 'react-pro-sidebar';
 import { Box, IconButton, Typography, useTheme } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom'; // Import useLocation
 import 'react-pro-sidebar/dist/css/styles.css';
 import { token } from '~/theme';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
@@ -10,6 +10,8 @@ import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import MenuBookOutlinedIcon from '@mui/icons-material/MenuBookOutlined';
 import SupportAgentOutlinedIcon from '@mui/icons-material/SupportAgentOutlined';
 import SettingsSuggestOutlinedIcon from '@mui/icons-material/SettingsSuggestOutlined';
+import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
+
 const Item = ({ title, to, icon, selected, setSelected }) => {
     const theme = useTheme();
     const colors = token(theme.palette.mode);
@@ -28,11 +30,25 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
     );
 };
 
-const Sidebar = () => {
+const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
     const theme = useTheme();
     const colors = token(theme.palette.mode);
-    const [isCollapsed, setIsCollapsed] = useState(false);
-    const [selected, setSelected] = useState('Dashboard');
+    const location = useLocation(); // Get current location
+    const [selected, setSelected] = useState('');
+
+    useEffect(() => {
+        // Map the current path to the corresponding title
+        const pathToTitleMap = {
+            '/': 'Trang chủ',
+            '/stories': 'Quản lí truyện tranh',
+            '/users': 'Quản lí tài khoản',
+            '/adminsupport': 'Hỗ trợ',
+            '/adminsetting': 'Cài đặt',
+            '/edit-users': 'Quản lí tài khoản',
+            '/categories': 'Quản lí danh mục',
+        };
+        setSelected(pathToTitleMap[location.pathname] || ''); // Set selected based on path
+    }, [location.pathname]);
 
     return (
         <Box
@@ -54,11 +70,13 @@ const Sidebar = () => {
                 },
             }}
         >
+            {console.log('Sidebar collapsed:', isCollapsed)}
             <ProSidebar collapsed={isCollapsed}>
                 <Menu iconShape="square">
-                    {/* LOGO AND MENU ICON */}
                     <MenuItem
-                        onClick={() => setIsCollapsed(!isCollapsed)}
+                        onClick={() => {
+                            setIsCollapsed(!isCollapsed);
+                        }}
                         icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
                         style={{
                             margin: '10px 0 20px 0',
@@ -68,9 +86,13 @@ const Sidebar = () => {
                         {!isCollapsed && (
                             <Box display="flex" justifyContent="space-between" alignItems="center" ml="15px">
                                 <Typography variant="h4" color={colors.grey[100]}>
-                                    ADMINIS
+                                    ADMIN
                                 </Typography>
-                                <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
+                                <IconButton
+                                    onClick={() => {
+                                        setIsCollapsed(!isCollapsed);
+                                    }}
+                                >
                                     <MenuOutlinedIcon />
                                 </IconButton>
                             </Box>
@@ -112,14 +134,17 @@ const Sidebar = () => {
                             selected={selected}
                             setSelected={setSelected}
                         />
-
-                        {/* <Typography variant="h6" color={colors.grey[300]} sx={{ m: '15px 0 5px 20px' }}>
-                            Data
-                        </Typography> */}
                         <Item
                             title="Quản lí truyện tranh"
                             to="/stories"
                             icon={<MenuBookOutlinedIcon />}
+                            selected={selected}
+                            setSelected={setSelected}
+                        />
+                        <Item
+                            title="Quản lí danh mục"
+                            to="/categories"
+                            icon={<CategoryOutlinedIcon />}
                             selected={selected}
                             setSelected={setSelected}
                         />

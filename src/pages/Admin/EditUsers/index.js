@@ -7,6 +7,7 @@ import Header from '~/components/Header';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
+import RemoveCircleOutlinedIcon from '@mui/icons-material/RemoveCircleOutlined';
 
 // Validation schema
 const userSchema = yup.object().shape({
@@ -16,7 +17,6 @@ const userSchema = yup.object().shape({
     detail: yup.string(),
     role: yup.number().required('Role is required'),
     status: yup.string().required('Status is required'),
-    avatar: yup.mixed().required('Avatar is required'),
 });
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -67,28 +67,51 @@ function EditUsers() {
     const handleFormSubmit = (values) => {
         if (action === 'edit') {
             // Update user
-            // axios
-            //     .put(`http://localhost:8080/users/${userId}`, values)
-            //     .then(() => {
-            //         console.log('User updated successfully');
-            //         navigate('/admin/users'); // Redirect to user list
-            //     })
-            //     .catch((error) => {
-            //         console.error('Error updating user:', error);
-            //     });
+            axios
+                .put(`http://localhost:8080/users/${userId}`, values)
+                .then(() => {
+                    console.log('User updated successfully');
+                    alert('User updated successfully!'); // Thông báo thành công
+                    navigate('/users'); // Redirect to user list
+                })
+                .catch((error) => {
+                    console.error('Error updating user:', error);
+                });
             console.log('User updated successfully', values);
         } else {
             // Add new user
-            // axios
-            //     .post('http://localhost:8080/users', values)
-            //     .then(() => {
-            //         console.log('User added successfully');
-            //         navigate('/admin/users'); // Redirect to user list
-            //     })
-            //     .catch((error) => {
-            //         console.error('Error adding user:', error);
-            //     });
+            axios
+                .post('http://localhost:8080/users', values)
+                .then(() => {
+                    console.log('User added successfully');
+                    alert('User created successfully!'); // Thông báo thành công
+                    navigate('/users'); // Redirect to user list
+                })
+                .catch((error) => {
+                    console.error('Error adding user:', error);
+                });
             console.log('User added successfully', values);
+        }
+    };
+
+    const uploadFile = async (file) => {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+            const response = await axios.post('http://localhost:8080/api/files/upload', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            console.log('File uploaded successfully:', response.data);
+            console.log('File URL:', response.data.url); // URL của file đã upload
+            setSelectedImage(response.data); // Lưu URL của file đã upload
+
+            return response; // Trả về phản hồi từ server
+        } catch (error) {
+            console.error('Error uploading file:', error);
+            alert('Failed to upload file. Please try again.');
         }
     };
 
@@ -101,7 +124,12 @@ function EditUsers() {
             <Formik
                 // onSubmit={handleFormSubmit}
                 onSubmit={(values) => {
+                    // Kiểm tra nếu avatar không có giá trị, đặt thành null
+                    if (!values.avatar) {
+                        values.avatar = null;
+                    }
                     console.log('Form values:', values); // Hiển thị tất cả các giá trị đã nhập trong form
+                    handleFormSubmit(values); // Gọi hàm xử lý gửi form
                 }}
                 initialValues={initialValues}
                 validationSchema={userSchema}
@@ -200,7 +228,7 @@ function EditUsers() {
                                 <MenuItem value="active">Active</MenuItem>
                                 <MenuItem value="locked">Locked</MenuItem>
                             </TextField>
-                            <Box gridColumn="span 4" display="flex" justifyContent="space-between" alignItems="center">
+                            <Box gridColumn="span 4" display="flex" flexDirection="column" alignItems="flex-start">
                                 Avatar
                                 <Button
                                     component="label"
@@ -213,31 +241,61 @@ function EditUsers() {
                                     Upload files
                                     <VisuallyHiddenInput
                                         type="file"
-                                        onChange={(event) => {
-                                            console.log(event.target.files);
-                                            setSelectedImage(event.target.files[0]);
+                                        accept="image/*"
+                                        onChange={async (event) => {
+                                            const file = event.target.files[0];
+                                            if (file) {
+                                                try {
+                                                    // Gọi hàm uploadFile để upload file
+                                                    const response = await uploadFile(file);
+                                                    if (response && response.data) {
+                                                        const fileUrl = response.data; // URL trả về từ server
+                                                        setFieldValue('avatar', fileUrl); // Lưu URL vào form
+                                                        console.log('Avatar URL:', fileUrl);
+                                                    }
+                                                } catch (error) {
+                                                    console.error('Error uploading file:', error);
+                                                }
+                                            }
                                         }}
-                                        multiple
                                     />
                                 </Button>
                                 {touched.avatar && errors.avatar && (
                                     <div style={{ color: 'red', marginTop: '5px' }}>{errors.avatar}</div>
                                 )}
-                                {selectedImage && (
-                                    <div>
-                                        {/* Display the selected image */}
-                                        <img
-                                            alt="not found"
-                                            width={'250px'}
-                                            src="https://s135.hinhhinh.com//phe-kiem_1741433972.png?gt=hdfgdfg&mobile=2"
-                                        />
-                                        {console.log(URL.createObjectURL(selectedImage))}
-                                        <br /> <br />
-                                        {/* Button to remove the selected image */}
-                                        <button onClick={() => setSelectedImage(null)}>Remove</button>
-                                    </div>
-                                )}
                             </Box>
+                            {values.avatar && (
+                                <Box gridColumn="span 4" display="flex" position="relative">
+                                    {/* Hiển thị ảnh từ URL */}
+                                    <img
+                                        alt="Avatar"
+                                        width="250px"
+                                        src={values.avatar} // Hiển thị ảnh từ URL trong form
+                                        style={{ borderRadius: '8px' }} // Thêm bo góc nếu cần
+                                    />
+                                    {/* Nút Remove ở góc trên bên phải */}
+                                    <Button
+                                        variant="contained"
+                                        color="secondary"
+                                        startIcon={<RemoveCircleOutlinedIcon />}
+                                        onClick={() => setFieldValue('avatar', '')} // Xóa URL ảnh
+                                        style={{
+                                            zIndex: 2, // Đảm bảo nút nằm trên ảnh
+                                            backgroundColor: '#f44336', // Màu đỏ cho nút Remove
+                                            padding: '0',
+                                            width: '26px',
+                                            height: '26px',
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                        }}
+                                        sx={{
+                                            '& .MuiButton-startIcon': {
+                                                marginRight: 0, // Loại bỏ margin-right
+                                            },
+                                        }}
+                                    />
+                                </Box>
+                            )}
                         </Box>
 
                         <Box display="flex" justifyContent="flex-end" mt="20px">

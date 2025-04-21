@@ -33,7 +33,7 @@ function Users() {
                         ) : (
                             <LockOpenOutlinedIcon color="success" /> // Icon mở khóa
                         )}
-                        <Typography sx={{ ml: 1 }}>{status === 'locked' ? 'Locked' : 'Unlocked'}</Typography>
+                        <Typography sx={{ ml: 1 }}>{status === 'locked' ? 'Locked' : 'Active'}</Typography>
                     </Box>
                 );
             },
@@ -82,32 +82,59 @@ function Users() {
             },
         },
         {
-            field: 'edit',
-            headerName: 'Edit',
+            field: 'action',
+            headerName: 'Action', // Đổi tên cột thành "Action"
             flex: 1,
             renderCell: (params) => {
-                const { role } = params.row;
-                if (role === 0) {
-                    return (
+                return (
+                    <Box display="flex" gap="10px">
+                        {/* Nút Edit */}
                         <Button
                             variant="contained"
                             sx={{
-                                backgroundColor: colors.greenAccent[600], // Màu giống vai trò User
+                                backgroundColor: colors.greenAccent[600], // Màu nút Edit
                                 color: colors.grey[100], // Màu chữ
                                 '&:hover': {
                                     backgroundColor: colors.greenAccent[500], // Màu khi hover
                                 },
                             }}
-                            onClick={() => handleEdit(params.row)}
+                            onClick={() => handleEdit(params.row)} // Gọi hàm xử lý khi nhấn nút Edit
                         >
                             Edit
                         </Button>
-                    );
-                }
-                return null; // Không hiển thị nút nếu không phải manager
+                        {/* Nút Delete */}
+                        <Button
+                            variant="contained"
+                            sx={{
+                                backgroundColor: colors.redAccent[600], // Màu nút Delete
+                                color: colors.grey[100], // Màu chữ
+                                '&:hover': {
+                                    backgroundColor: colors.redAccent[500], // Màu khi hover
+                                },
+                            }}
+                            onClick={() => handleDelete(params.row)} // Gọi hàm xử lý khi nhấn nút Delete
+                        >
+                            Delete
+                        </Button>
+                    </Box>
+                );
             },
         },
     ];
+    const handleDelete = (row) => {
+        if (window.confirm(`Are you sure you want to delete user ${row.username}?`)) {
+            axios
+                .delete(`http://localhost:8080/users/${row.user_id}`) // Gửi yêu cầu xóa đến API
+                .then(() => {
+                    alert('User deleted successfully!');
+                    fetchPackages(); // Tải lại danh sách người dùng sau khi xóa
+                })
+                .catch((error) => {
+                    console.error('Error deleting user:', error);
+                    alert('Failed to delete user. Please try again.');
+                });
+        }
+    };
     const navigate = useNavigate();
     const handleEdit = (row) => {
         // Xử lý sự kiện khi nhấn nút Edit

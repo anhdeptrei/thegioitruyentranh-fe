@@ -7,6 +7,8 @@ import Stories from '~/pages/Admin/Stories';
 import AdminSupport from '~/pages/Admin/AdminSupport';
 import AdminSetting from '~/pages/Admin/AdminSetting';
 import EditUsers from '~/pages/Admin/EditUsers';
+import Categories from '~/pages/Admin/Categories';
+import EditCategory from '~/pages/Admin/EditCategory';
 //public route
 const publicRoutes = [
     { path: '/', component: Home },
@@ -16,6 +18,8 @@ const publicRoutes = [
     { path: '/users', component: Users },
     { path: '/adminsupport', component: AdminSupport },
     { path: '/edit-users', component: EditUsers },
+    { path: '/categories', component: Categories },
+    { path: '/edit-category', component: EditCategory },
 ];
 //private route
 const privateRoutes = [];

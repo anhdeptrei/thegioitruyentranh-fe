@@ -1,15 +1,18 @@
-import Topbar from './Topbar';
+import { useState } from 'react';
 import Sidebar from './Sidebar';
+import Topbar from './Topbar';
 
 function DefaultLayout({ children }) {
+    const [isCollapsed, setIsCollapsed] = useState(false);
+
     return (
-        <>
-            <Sidebar />
-            <main className="content">
+        <div className="app">
+            <Sidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
+            <main className={`content ${isCollapsed ? 'collapsed' : 'expanded'}`}>
                 <Topbar />
                 {children}
             </main>
-        </>
+        </div>
     );
 }
 

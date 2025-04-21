@@ -3,8 +3,7 @@
 html,
 body,
 #root,
-.app,
-.content {
+.app {
     height: 100%;
     width: 100%;
     font-family: 'Source Sans 3', sans-serif;
@@ -12,6 +11,18 @@ body,
 .app {
     display: flex;
     position: relative;
+}
+.content {
+    height: 100%;
+    transition: width 0.3s ease;
+}
+
+.content.expanded {
+    width: calc(100% - 270px); // Khi Sidebar mở
+}
+
+.content.collapsed {
+    width: calc(100% - 80px); // Khi Sidebar đóng
 }
 
 ::-webkit-scrollbar {
