@@ -5,6 +5,8 @@ import { DataGrid } from '@mui/x-data-grid';
 import { token } from '~/theme';
 import Header from '~/components/Header';
 import { useNavigate } from 'react-router-dom';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 
 function Categories() {
     const theme = useTheme();
@@ -26,8 +28,9 @@ function Categories() {
                     <Box display="flex" gap="10px">
                         {/* Nút Edit */}
                         <Button
-                            variant="contained"
+                            size="small"
                             sx={{
+                                minWidth: '40px', // Đảm bảo kích thước nhỏ gọn
                                 backgroundColor: colors.greenAccent[600],
                                 color: colors.grey[100],
                                 '&:hover': {
@@ -36,12 +39,14 @@ function Categories() {
                             }}
                             onClick={() => handleEdit(params.row)}
                         >
-                            Edit
+                            <EditOutlinedIcon />
                         </Button>
+
                         {/* Nút Delete */}
                         <Button
-                            variant="contained"
+                            size="small"
                             sx={{
+                                minWidth: '40px', // Đảm bảo kích thước nhỏ gọn
                                 backgroundColor: colors.redAccent[600],
                                 color: colors.grey[100],
                                 '&:hover': {
@@ -50,7 +55,7 @@ function Categories() {
                             }}
                             onClick={() => handleDelete(params.row)}
                         >
-                            Delete
+                            <DeleteOutlinedIcon />
                         </Button>
                     </Box>
                 );

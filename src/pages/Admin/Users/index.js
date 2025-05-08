@@ -7,6 +7,9 @@ import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettin
 import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
 import SecurityOutlinedIcon from '@mui/icons-material/SecurityOutlined';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+
 import Header from '~/components/Header';
 import { useNavigate } from 'react-router-dom';
 
@@ -90,31 +93,34 @@ function Users() {
                     <Box display="flex" gap="10px">
                         {/* Nút Edit */}
                         <Button
-                            variant="contained"
+                            size="small"
                             sx={{
-                                backgroundColor: colors.greenAccent[600], // Màu nút Edit
-                                color: colors.grey[100], // Màu chữ
+                                minWidth: '40px', // Đảm bảo kích thước nhỏ gọn
+                                backgroundColor: colors.greenAccent[600],
+                                color: colors.grey[100],
                                 '&:hover': {
-                                    backgroundColor: colors.greenAccent[500], // Màu khi hover
+                                    backgroundColor: colors.greenAccent[500],
                                 },
                             }}
-                            onClick={() => handleEdit(params.row)} // Gọi hàm xử lý khi nhấn nút Edit
+                            onClick={() => handleEdit(params.row)}
                         >
-                            Edit
+                            <EditOutlinedIcon />
                         </Button>
+
                         {/* Nút Delete */}
                         <Button
-                            variant="contained"
+                            size="small"
                             sx={{
-                                backgroundColor: colors.redAccent[600], // Màu nút Delete
-                                color: colors.grey[100], // Màu chữ
+                                minWidth: '40px', // Đảm bảo kích thước nhỏ gọn
+                                backgroundColor: colors.redAccent[600],
+                                color: colors.grey[100],
                                 '&:hover': {
-                                    backgroundColor: colors.redAccent[500], // Màu khi hover
+                                    backgroundColor: colors.redAccent[500],
                                 },
                             }}
-                            onClick={() => handleDelete(params.row)} // Gọi hàm xử lý khi nhấn nút Delete
+                            onClick={() => handleDelete(params.row)}
                         >
-                            Delete
+                            <DeleteOutlinedIcon />
                         </Button>
                     </Box>
                 );

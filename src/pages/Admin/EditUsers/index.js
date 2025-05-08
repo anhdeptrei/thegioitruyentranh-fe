@@ -137,6 +137,11 @@ function EditUsers() {
             >
                 {({ values, errors, touched, handleBlur, handleChange, handleSubmit, setFieldValue }) => (
                     <form onSubmit={handleSubmit}>
+                        <Box display="flex" justifyContent="flex-end">
+                            <Button type="submit" color="secondary" variant="contained">
+                                {action === 'edit' ? 'Update User' : 'Create New User'}
+                            </Button>
+                        </Box>
                         <Box
                             display="grid"
                             gap="30px"
@@ -266,42 +271,29 @@ function EditUsers() {
                             </Box>
                             {values.avatar && (
                                 <Box gridColumn="span 4" display="flex" position="relative">
-                                    {/* Hiển thị ảnh từ URL */}
                                     <img
-                                        alt="Avatar"
+                                        alt="Cover"
                                         width="250px"
-                                        src={values.avatar} // Hiển thị ảnh từ URL trong form
-                                        style={{ borderRadius: '8px' }} // Thêm bo góc nếu cần
+                                        src={values.avatar}
+                                        style={{ borderRadius: '8px' }}
                                     />
-                                    {/* Nút Remove ở góc trên bên phải */}
                                     <Button
+                                        size="small"
                                         variant="contained"
                                         color="secondary"
-                                        startIcon={<RemoveCircleOutlinedIcon />}
-                                        onClick={() => setFieldValue('avatar', '')} // Xóa URL ảnh
+                                        onClick={() => setFieldValue('cover_image', '')}
                                         style={{
-                                            zIndex: 2, // Đảm bảo nút nằm trên ảnh
                                             backgroundColor: '#f44336', // Màu đỏ cho nút Remove
-                                            padding: '0',
-                                            width: '26px',
                                             height: '26px',
-                                            display: 'flex',
-                                            justifyContent: 'center',
                                         }}
                                         sx={{
-                                            '& .MuiButton-startIcon': {
-                                                marginRight: 0, // Loại bỏ margin-right
-                                            },
+                                            minWidth: '40px', // Đảm bảo kích thước nhỏ gọn
                                         }}
-                                    />
+                                    >
+                                        <RemoveCircleOutlinedIcon />
+                                    </Button>
                                 </Box>
                             )}
-                        </Box>
-
-                        <Box display="flex" justifyContent="flex-end" mt="20px">
-                            <Button type="submit" color="secondary" variant="contained">
-                                {action === 'edit' ? 'Update User' : 'Create New User'}
-                            </Button>
                         </Box>
                     </form>
                 )}

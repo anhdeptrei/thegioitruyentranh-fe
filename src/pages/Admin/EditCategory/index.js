@@ -81,6 +81,11 @@ function EditCategory() {
             >
                 {({ values, errors, touched, handleBlur, handleChange, handleSubmit }) => (
                     <form onSubmit={handleSubmit}>
+                        <Box display="flex" justifyContent="flex-end">
+                            <Button type="submit" color="secondary" variant="contained">
+                                {action === 'edit' ? 'Update Category' : 'Create New Category'}
+                            </Button>
+                        </Box>
                         <Box
                             display="grid"
                             gap="30px"
@@ -113,12 +118,6 @@ function EditCategory() {
                                 helperText={touched.category_description && errors.category_description}
                                 sx={{ gridColumn: 'span 4' }}
                             />
-                        </Box>
-
-                        <Box display="flex" justifyContent="flex-end" mt="20px">
-                            <Button type="submit" color="secondary" variant="contained">
-                                {action === 'edit' ? 'Update Category' : 'Create New Category'}
-                            </Button>
                         </Box>
                     </form>
                 )}

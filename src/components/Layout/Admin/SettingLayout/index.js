@@ -1,5 +1,5 @@
 import React from 'react';
-import Sidebar from '../DefaultLayout/Sidebar';
+import Sidebar from '../AdminDefaultLayout/Sidebar';
 const SettingLayout = ({ children }) => {
     return (
         <>

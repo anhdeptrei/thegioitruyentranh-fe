@@ -1,0 +1,127 @@
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { Box, Button, Typography, useTheme } from '@mui/material';
+import { DataGrid } from '@mui/x-data-grid';
+import { token } from '~/theme';
+import Header from '~/components/Header';
+import { useNavigate } from 'react-router-dom';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+
+function Support() {
+    const theme = useTheme();
+    const colors = token(theme.palette.mode);
+    const [reports, setReports] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    const columns = [
+        { field: 'reportId', headerName: 'Report ID', flex: 1 }, // ID báo cáo
+        { field: 'userId', headerName: 'User ID', flex: 1 }, // ID người dùng
+        { field: 'chapterId', headerName: 'Chapter ID', flex: 1 }, // ID chương
+        { field: 'detail', headerName: 'Detail', flex: 2 }, // Chi tiết
+        { field: 'description', headerName: 'Description', flex: 2 }, // Mô tả
+        { field: 'createAt', headerName: 'Created At', flex: 1 }, // Ngày tạo
+        {
+            field: 'action',
+            headerName: 'Action',
+            flex: 1,
+            renderCell: (params) => {
+                return (
+                    <Box display="flex" gap="10px">
+                        {/* Nút Delete */}
+                        <Button
+                            size="small"
+                            sx={{
+                                minWidth: '40px', // Đảm bảo kích thước nhỏ gọn
+                                backgroundColor: colors.redAccent[600],
+                                color: colors.grey[100],
+                                '&:hover': {
+                                    backgroundColor: colors.redAccent[500],
+                                },
+                            }}
+                            onClick={() => handleDelete(params.row)}
+                        >
+                            <DeleteOutlinedIcon />
+                        </Button>
+                    </Box>
+                );
+            },
+        },
+    ];
+
+    const navigate = useNavigate();
+
+    const handleDelete = (row) => {
+        if (window.confirm(`Are you sure you want to delete report ID "${row.report_id}"?`)) {
+            axios
+                .delete(`http://localhost:8080/reports/${row.report_id}`)
+                .then(() => {
+                    alert('Report deleted successfully!');
+                    fetchReports();
+                })
+                .catch((error) => {
+                    console.error('Error deleting report:', error);
+                    alert('Failed to delete report. Please try again.');
+                });
+        }
+    };
+
+    useEffect(() => {
+        fetchReports();
+    }, []);
+
+    const fetchReports = () => {
+        setLoading(true);
+        axios
+            .get('http://localhost:8080/reports/all')
+            .then((response) => {
+                setReports(response.data);
+                setLoading(false);
+                console.log('Fetched reports:', response.data);
+            })
+            .catch((error) => {
+                console.error('Error fetching reports:', error);
+                setError('Failed to fetch reports.');
+                setLoading(false);
+            });
+    };
+
+    return (
+        <Box m="20px">
+            <Header title="Hỗ trợ người dùng" subtitle="supporting users" />
+            <Box
+                height="75vh"
+                sx={{
+                    '& .MuiDataGrid-root': {
+                        border: 'none',
+                    },
+                    '& .MuiDataGrid-cell': {
+                        borderBottom: 'none',
+                    },
+                    '& .MuiDataGrid-columnHeaders': {
+                        backgroundColor: colors.blueAccent[700],
+                        borderBottom: 'none',
+                    },
+                    '& .MuiDataGrid-virtualScroller': {
+                        backgroundColor: colors.primary[400],
+                    },
+                    '& .MuiDataGrid-footerContainer': {
+                        backgroundColor: colors.blueAccent[700],
+                        borderTop: 'none',
+                    },
+                }}
+            >
+                <DataGrid
+                    rows={reports}
+                    columns={columns}
+                    getRowId={(row) => row.reportId}
+                    loading={loading}
+                    error={error}
+                />
+            </Box>
+        </Box>
+    );
+}
+
+export default Support;
