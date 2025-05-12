@@ -12,9 +12,6 @@ const Chapter = () => {
 
     const { data: story, errorstory, isLoadingstory } = useFetch('http://localhost:8080/stories/ ' + id);
 
-    console.log('chapter', chapter);
-    console.log('chapters list', story); // Kiểm tra danh sách chapters
-
     return (
         <div className="chapter-view">
             {!error && !isLoading && chapter && chapter.data && (

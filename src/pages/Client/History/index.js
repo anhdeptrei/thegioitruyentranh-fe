@@ -65,7 +65,9 @@ const History = () => {
                 </h2>
                 {shortHistory.map((hist) => (
                     <div className="history-item" key={hist.id}>
-                        <Link to={`/chapter/${hist.id}/${hist.slug}`}>{`${hist.title}-${hist.manga_title}`}</Link>
+                        <Link
+                            to={`/chapter/${hist.id}/${hist.id_chapters}`}
+                        >{`${hist.title}-${hist.manga_title}`}</Link>
                         <button className="remove" onClick={() => removeHistory(hist.id)}>
                             <FontAwesomeIcon icon={faXmark} /> Remove
                         </button>

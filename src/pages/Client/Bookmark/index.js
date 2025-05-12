@@ -68,16 +68,14 @@ const Bookmark = () => {
                         <div className="series-item" key={seri.id}>
                             <div className="series-content">
                                 <div className="thumb">
-                                    <Link to={`/series/` + seri.slug + `/`}>
-                                        <img
-                                            src={`https://img.otruyenapi.com/uploads/comics/${seri.thumb_url}`}
-                                            alt={seri.id}
-                                        />
+                                    <Link to={`/series/` + seri.id}>
+                                        <img src={seri.cover_image} alt={seri.cover_image} />
+                                        {console.log('corver image', seri.cover_image)}
                                     </Link>
                                 </div>
                                 <div className="series-preview">
                                     <Link to={`/series/` + seri.id + `/`}>
-                                        <h3 className="title">{seri.name}</h3>
+                                        <h3 className="title">{seri.title}</h3>
                                     </Link>
                                     <div className="favorite pages">
                                         <button className="remove" onClick={() => removeBookmark(seri.id)}>
@@ -103,7 +101,7 @@ const Bookmark = () => {
                 <div className="svg-img">
                     <img src={notFound} alt="Not Found" />
                 </div>
-                <Link to="/series-list/">
+                <Link to="/series-list/0">
                     <span className="back-home">Series List</span>
                 </Link>
             </div>

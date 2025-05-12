@@ -32,29 +32,28 @@ const SeriesDetail = ({ series }) => {
 
     const { dispatch, bookmark } = useContext(BookmarkContext);
     const addBookmark = () => {
-        // dispatch({
-        //     type: 'ADD_BOOKMARK',
-        //     series: {
-        //         id,
-        //         title,
-        //         thumb_url,
-        //         slug,
-        //         date_time,
-        //     },
-        // });
-        // swal({
-        //     title: 'Saved',
-        //     text: 'Success added to Bookmark',
-        //     icon: 'success',
-        // });
+        dispatch({
+            type: 'ADD_BOOKMARK',
+            series: {
+                id,
+                title,
+                cover_image,
+                date_time,
+            },
+        });
+        swal({
+            title: 'Saved',
+            text: 'Success added to Bookmark',
+            icon: 'success',
+        });
     };
     const removeBookmark = () => {
-        // dispatch({ type: 'REMOVE_BOOKMARK', id: series.data.item._id });
-        // swal({
-        //     title: 'Removed',
-        //     text: 'Success removed from Bookmark',
-        //     icon: 'success',
-        // });
+        dispatch({ type: 'REMOVE_BOOKMARK', id: series.story_id });
+        swal({
+            title: 'Removed',
+            text: 'Success removed from Bookmark',
+            icon: 'success',
+        });
     };
     let storedSeries = bookmark.find((bookmark) => bookmark.id === id);
     const bookmarkDisabled = storedSeries ? true : false;
@@ -95,7 +94,9 @@ const SeriesDetail = ({ series }) => {
                                         </div>
                                         {shortHistory.length !== 0 && (
                                             <span className="continue">
-                                                <Link to={`/chapter/${shortHistory[0].id}/${shortHistory[0].slug}`}>
+                                                <Link
+                                                    to={`/chapter/${shortHistory[0].id}/${shortHistory[0].id_chapters}`}
+                                                >
                                                     Continue Read
                                                 </Link>
                                             </span>

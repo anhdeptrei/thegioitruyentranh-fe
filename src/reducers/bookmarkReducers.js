@@ -1,16 +1,18 @@
 export const BookmarkReducer = (state, action) => {
-    switch(action.type) {
+    switch (action.type) {
         case 'ADD_BOOKMARK':
-            return [...state, {
-                id: action.series.id,
-                name: action.series.name,
-                thumb_url: action.series.thumb_url,
-                slug: action.series.slug,
-                date: action.series.date_time
-            }];
+            return [
+                ...state,
+                {
+                    id: action.series.id,
+                    title: action.series.title,
+                    cover_image: action.series.cover_image,
+                    date: action.series.date_time,
+                },
+            ];
         case 'REMOVE_BOOKMARK':
-            return state.filter(series => series.id !== action.id);
+            return state.filter((series) => series.id !== action.id);
         default:
             return state;
     }
-}
+};

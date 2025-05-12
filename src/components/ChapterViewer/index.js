@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
@@ -13,17 +13,22 @@ const ChapterViewer = ({ chapter, chapters }) => {
     console.log('chapter view', chapter);
     console.log('chapters view', chapters);
     const id = chapter.chapterId;
+    console.log(id);
     const chapter_image = chapter.images;
     const chapter_number = chapter.chapterNumber;
     const chapter_title = chapter.title;
 
+    const id_chapters = chapters.story_id;
+    console.log(id_chapters);
     const chapters_name = chapters.title; //ten truyen
+    console.log(chapters_name);
     const allchapters = chapters.chapters; //tất cả chapter
     console.log('allchapters', allchapters);
 
     // const slug = chapters.data.item.slug; //slug truyen
 
     const ch_title = 'Chapter ' + chapter_number;
+    console.log(ch_title);
 
     const title = chapter.manga_title;
     const ch = chapter.current_ch;
@@ -37,36 +42,42 @@ const ChapterViewer = ({ chapter, chapters }) => {
     var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
     var time = today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds();
     var date_time = date + ' ' + time;
+
     const { dispatch } = useContext(HistoryContext);
     const addHistory = () => {
-        // dispatch({ type: 'REMOVE_HISTORY', id: id });
-        // dispatch({
-        //     type: 'ADD_HISTORY',
-        //     chapter: {
-        //         id,
-        //         ch_title,
-        //         slug,
-        //         date_time,
-        //         chapters_name,
-        //     },
-        // });
+        dispatch({ type: 'REMOVE_HISTORY', id: id });
+        dispatch({
+            type: 'ADD_HISTORY',
+            chapter: {
+                id,
+                ch_title,
+                id_chapters,
+                chapters_name,
+                date_time,
+            },
+        });
+        console.log('Adding to history:', {
+            id,
+            ch_title,
+            id_chapters,
+            chapters_name,
+            date_time,
+        });
     };
-    console.log('chapter_title', allchapters);
+    useEffect(() => {
+        addHistory();
+    }, []); // Chỉ chạy một lần khi component được render
 
     const currentChapterIndex = allchapters.findIndex((chapter) => chapter.chapterNumber === chapter_number);
-    console.log('currentChapterIndex', currentChapterIndex);
-    console.log('allchapters.length - 1', allchapters.length - 1);
 
     const prevChapter = currentChapterIndex === allchapters.length - 1 ? null : allchapters[currentChapterIndex + 1];
-    console.log('prevChapter', prevChapter);
 
     const nextChapter = currentChapterIndex === 0 ? null : allchapters[currentChapterIndex - 1];
-    console.log('nextChapter', nextChapter);
     return (
         <div className="container">
             {!chapter_number && <NotFoundPages />}
             {chapter_number && (
-                <div className="chapter-viewer" onLoad={() => addHistory()}>
+                <div className="chapter-viewer">
                     <div className="viewer-info">
                         <h3>
                             {chapters_name} - Chapter {chapter_number}
