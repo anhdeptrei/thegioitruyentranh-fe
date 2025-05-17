@@ -16,8 +16,11 @@ const Chapter = () => {
         <div className="chapter-view">
             {!error && !isLoading && chapter && chapter.data && (
                 <Helmet>
-                    <title>{chapter.data.item.comic_name} - ReadComic</title>
-                    <meta name="description" content={`Read ` + chapter.data.item.comic_name + ` on ReadComic`} />
+                    <title>{chapter.data.item.comic_name} - thế giới truyện tranh</title>
+                    <meta
+                        name="description"
+                        content={`Đọc ${chapter.data.item.comic_name} trên thế giới truyện tranh`}
+                    />
                 </Helmet>
             )}
             {error && (

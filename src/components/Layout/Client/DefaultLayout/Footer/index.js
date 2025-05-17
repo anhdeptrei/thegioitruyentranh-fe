@@ -4,7 +4,7 @@ import { faHeart } from '@fortawesome/free-solid-svg-icons';
 const Footer = () => {
     return (
         <div className="footer">
-            <div className="credit">Đây là footer của trang web.</div>
+            <div className="credit">Mong mọi người yêu thích trang web.</div>
         </div>
     );
 };

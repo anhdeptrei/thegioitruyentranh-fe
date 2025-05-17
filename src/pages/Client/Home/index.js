@@ -13,7 +13,7 @@ const Home = () => {
     return (
         <div className="latest">
             <div className="container">
-                <div className="notif">Welcome to ReadComic</div>
+                <div className="notif">Chào mừng bạn đến với thế giới truyện tranh</div>
             </div>
             {error && (
                 <div className="container">
@@ -26,11 +26,11 @@ const Home = () => {
                     <div className="text-message">No Series Found...</div>
                 )}
                 {!error && !isLoading && series && series.error === undefined && (
-                    <SeriesList series={series} title1="Latest" title2="Updated" />
+                    <SeriesList series={series} title1="Cập nhật" title2="gần đây" />
                 )}
                 {!error && !isLoading && series && series.error === undefined && (
                     <div className="view-latest">
-                        <Link to={'/latest/0'}>View all updated list</Link>
+                        <Link to={'/latest/0'}>Xem tất cả danh sách</Link>
                     </div>
                 )}
             </div>

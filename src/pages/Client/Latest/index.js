@@ -13,13 +13,16 @@ const Latest = () => {
         isLoading,
         error,
     } = useFetch('http://localhost:8080/stories/status/dang-cap-nhat/page?page=' + pages);
-
+    console.log('series', series);
     return (
         <div className="all-list">
             {!error && !isLoading && series && series.error === undefined && (
                 <Helmet>
-                    <title>Latest Updated - Page {pages} - ReadComic</title>
-                    <meta name="description" content="Latest Updated Comic, Manga, Manhwa, and Manhua on ReadComic" />
+                    <title>Cập nhật mới nhất - Trang {pages} - thế giới truyện tranh</title>
+                    <meta
+                        name="description"
+                        content="Truyện tranh Manga, Manhwa và Manhua mới nhất trên thế giới truyện tranh"
+                    />
                 </Helmet>
             )}
             {error && (
@@ -31,7 +34,7 @@ const Latest = () => {
             <div className="container">
                 {!error && !isLoading && series && series.error && <NotFoundPages />}
                 {!error && !isLoading && series && series.error === undefined && (
-                    <SeriesList series={series} title1="Latest" title2="Updated" />
+                    <SeriesList series={series} title1="Cập nhật" title2="mới nhất" />
                 )}
                 {!error && !isLoading && series && series.error === undefined && (
                     <Pagination series={series} url="/latest/" />

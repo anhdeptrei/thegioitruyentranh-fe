@@ -19,11 +19,8 @@ const Search = () => {
             {pages === undefined && <Navigate to={`/search/${search}/1/`} replace />} {/* Use Navigate here */}
             {!error && !isLoading && series && series.error === undefined && (
                 <Helmet>
-                    <title>Search Result - Page {pages} - ReadComic</title>
-                    <meta
-                        name="description"
-                        content="Search Result for Comic, Manga, Manhwa, and Manhua on ReadComic"
-                    />
+                    <title>Kết quả tìm kiếm - Trang {pages} - thế giới truyện tranh</title>
+                    <meta name="description" content="Kết quả tìm kiếm cho truyện tranh trên thế giới truyện tranh" />
                 </Helmet>
             )}
             {error && (
@@ -35,7 +32,7 @@ const Search = () => {
             <div className="container">
                 {!error && !isLoading && series && series.error && <NotFoundPages />}
                 {!error && !isLoading && series && series.error === undefined && (
-                    <SeriesList series={series} title1="Search" title2={series.p_title} />
+                    <SeriesList series={series} title1="Tìm kiếm" title2={search} />
                 )}
                 {!error && !isLoading && series && series.error === undefined && series.length !== 0 && (
                     <Pagination series={series} url={`/search/${search}/`} />

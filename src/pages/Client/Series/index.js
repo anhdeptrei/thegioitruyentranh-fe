@@ -12,8 +12,8 @@ const Series = () => {
         <div className="series">
             {!error && !isLoading && series && series.error === undefined && (
                 <Helmet>
-                    <title>{series.title} - ReadComic</title>
-                    <meta name="description" content={`Read ` + series.title + ` on ReadComic`} />
+                    <title>{series.title} - thế giới truyện tranh</title>
+                    <meta name="description" content={`Đọc ` + series.title + ` trên thế giới truyện tranh`} />
                 </Helmet>
             )}
             {error && (

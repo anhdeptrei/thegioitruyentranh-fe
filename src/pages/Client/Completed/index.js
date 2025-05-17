@@ -18,8 +18,11 @@ const Completed = () => {
         <div className="all-list">
             {!error && !isLoading && series && series.error === undefined && (
                 <Helmet>
-                    <title>Completed Series - Page {pages} - ReadComic</title>
-                    <meta name="description" content="Completed Series Comic, Manga, Manhwa, and Manhua on ReadComic" />
+                    <title>Truyện đã hoàn thành - Trang {pages} - Thế giới truyện tranh</title>
+                    <meta
+                        name="description"
+                        content="Danh sách tất cả các bộ truyện tranh đã hoàn thành trên thế giới truyện tranh"
+                    />
                 </Helmet>
             )}
             {error && (
@@ -31,7 +34,7 @@ const Completed = () => {
             <div className="container">
                 {!error && !isLoading && series && series.error && <NotFoundPages />}
                 {!error && !isLoading && series && series.error === undefined && (
-                    <SeriesList series={series} title1="Completed" title2="Series" />
+                    <SeriesList series={series} title1="Truyện" title2="đã hoàn thành" />
                 )}
                 {!error && !isLoading && series && series.error === undefined && (
                     <Pagination series={series} url="/completed/" />

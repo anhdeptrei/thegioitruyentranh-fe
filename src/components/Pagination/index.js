@@ -17,12 +17,12 @@ const Pagination = ({ series, url }) => {
                 <ul className="pagination-list">
                     {prev_status === true && (
                         <li className="prev-page">
-                            <Link to={url + prev + `/`}>Prev Page</Link>
+                            <Link to={url + prev + `/`}>Trang trước</Link>
                         </li>
                     )}
                     {prev_status === false && (
                         <li className="prev-page disabled">
-                            <span>Prev Page</span>
+                            <span>Trang trước</span>
                         </li>
                     )}
                     <li className="current-page">
@@ -30,12 +30,12 @@ const Pagination = ({ series, url }) => {
                     </li>
                     {next_status === true && (
                         <li className="next-page">
-                            <Link to={url + next + `/`}>Next Page</Link>
+                            <Link to={url + next + `/`}>Trang sau</Link>
                         </li>
                     )}
                     {next_status === false && (
                         <li className="next-page disabled">
-                            <span>Next Page</span>
+                            <span>Trang sau</span>
                         </li>
                     )}
                 </ul>

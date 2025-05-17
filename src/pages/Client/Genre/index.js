@@ -19,9 +19,12 @@ const Genre = () => {
             {!error && !isLoading && series && series.error === undefined && (
                 <Helmet>
                     <title>
-                        {series.data.titlePage} - Page {pages} - ReadComic
+                        {series.data.titlePage} - Trang {pages} - Thế giới truyện tranh
                     </title>
-                    <meta name="description" content="Latest Updated Comic, Manga, Manhwa, and Manhua on ReadComic" />
+                    <meta
+                        name="description"
+                        content="Truyện tranh, Manga, Manhwa và Manhua mới nhất trên thế giới truyện tranh"
+                    />
                 </Helmet>
             )}
             {pages === undefined && <Navigate to={`/genre/${genre}/1/`} replace />} {/* Use Navigate here */}

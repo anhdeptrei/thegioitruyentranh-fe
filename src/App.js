@@ -2,8 +2,6 @@ import { Fragment } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { publicRoutes } from '~/routes';
 import { AdminDefaultLayout } from '~/components/Layout';
-import GlobalStylesAdmin from './components/GlobalStyles/admin/GlobalStylesAdmin';
-import GlobalStylesClient from './components/GlobalStyles/client/GlobalStylesClient';
 import DefaultLayout from './components/Layout/Client/DefaultLayout';
 
 function App() {

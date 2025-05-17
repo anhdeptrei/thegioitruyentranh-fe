@@ -15,17 +15,17 @@ const History = () => {
     });
     const removeHistory = (hist_id) => {
         swal({
-            title: 'Are you sure?',
-            text: 'Once deleted, you will not be able to recover your history!',
+            title: 'Bạn có chắc chắn không?',
+            text: 'Một khi đã xóa, bạn sẽ không thể khôi phục lại lịch sử của mình!',
             icon: 'warning',
-            buttons: ['No', 'Yes'],
+            buttons: ['Không', 'Có'],
             dangerMode: true,
         }).then((remove) => {
             if (remove) {
                 dispatch({ type: 'REMOVE_HISTORY', id: hist_id });
                 swal({
-                    title: 'Removed',
-                    text: 'Success removed from History',
+                    title: 'Đã xóa',
+                    text: 'Đã xóa khỏi lịch sử',
                     icon: 'success',
                 });
             }
@@ -33,16 +33,16 @@ const History = () => {
     };
     const removeAllHistory = () => {
         swal({
-            title: 'Are you sure?',
-            text: 'Once deleted, you will not be able to recover your history!',
+            title: 'Bạn có chắc chắn không?',
+            text: 'Một khi đã xóa, bạn sẽ không thể khôi phục lại lịch sử của mình!',
             icon: 'warning',
-            buttons: ['No', 'Yes'],
+            buttons: ['Không', 'Có'],
             dangerMode: true,
         }).then((remove) => {
             if (remove) {
                 swal({
-                    title: 'Removed',
-                    text: 'Success removed all History',
+                    title: 'Đã xóa',
+                    text: 'Đã xóa tất cả lịch sử',
                     icon: 'success',
                 });
                 localStorage.setItem('history', []);
@@ -53,14 +53,14 @@ const History = () => {
     return history.length ? (
         <div className="container all-list">
             <Helmet>
-                <title>History - ReadComic</title>
-                <meta name="description" content="All History Read on ReadComic" />
+                <title>Lịch sử đọc truyện - thế giới truyện tranh</title>
+                <meta name="description" content="Lịch sử đọc truyện trên thế giới truyện tranh" />
             </Helmet>
             <div className="history-list">
                 <h2>
-                    <span>History</span> Read{' '}
+                    <span>Lịch sử</span> đọc truyện
                     <button className="remove-all" onClick={() => removeAllHistory()}>
-                        Remove All
+                        Xóa tất cả
                     </button>
                 </h2>
                 {shortHistory.map((hist) => (
@@ -78,17 +78,17 @@ const History = () => {
     ) : (
         <div className="container">
             <Helmet>
-                <title>History - ReadComic</title>
-                <meta name="description" content="All Series List Comic, Manga, Manhwa, and Manhua on ReadComic" />
+                <title>Lịch sử đọc truyện - thế giới truyện tranh</title>
+                <meta name="description" content="Lịch sử đọc truyện trên thế giới truyện tranh" />
             </Helmet>
             <div className="text-message not-found">
-                <h2>Empty History</h2>
-                <p>Your history is empty</p>
+                <h2>Lịch sử trống</h2>
+                <p>Bạn chưa đọc truyện nào, hãy đọc truyện mới nhé!</p>
                 <div className="svg-img">
                     <img src={notFound} alt="Not Found" />
                 </div>
                 <Link to="/series-list/">
-                    <span className="back-home">Series List</span>
+                    <span className="back-home">Quay về danh sách truyện</span>
                 </Link>
             </div>
         </div>

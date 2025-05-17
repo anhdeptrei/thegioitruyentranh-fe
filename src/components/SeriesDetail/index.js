@@ -42,8 +42,8 @@ const SeriesDetail = ({ series }) => {
             },
         });
         swal({
-            title: 'Saved',
-            text: 'Success added to Bookmark',
+            title: 'Đã lưu',
+            text: 'Thêm vào danh sách yêu thích thành công',
             icon: 'success',
         });
     };
@@ -83,12 +83,12 @@ const SeriesDetail = ({ series }) => {
                                         <div className="favorite">
                                             {!bookmarkDisabled && (
                                                 <button onClick={() => addBookmark()}>
-                                                    <FontAwesomeIcon icon={faHeart} /> Add to Bookmark
+                                                    <FontAwesomeIcon icon={faHeart} /> Theo dõi
                                                 </button>
                                             )}
                                             {bookmarkDisabled && (
                                                 <button className="remove" onClick={() => removeBookmark()}>
-                                                    <FontAwesomeIcon icon={faXmark} /> Remove
+                                                    <FontAwesomeIcon icon={faXmark} /> Bỏ theo dõi
                                                 </button>
                                             )}
                                         </div>
@@ -97,7 +97,7 @@ const SeriesDetail = ({ series }) => {
                                                 <Link
                                                     to={`/chapter/${shortHistory[0].id}/${shortHistory[0].id_chapters}`}
                                                 >
-                                                    Continue Read
+                                                    Tiếp tục đọc
                                                 </Link>
                                             </span>
                                         )}
@@ -106,13 +106,13 @@ const SeriesDetail = ({ series }) => {
                                         {console.log('authors', authors)}
                                         {authors && (
                                             <li>
-                                                <b>Author(s)</b>
+                                                <b>Tác giả</b>
                                                 <span>{authors}</span>
                                             </li>
                                         )}
                                         {status && (
                                             <li>
-                                                <b>Status</b>
+                                                <b>Trạng thái</b>
                                                 <span>
                                                     {status === 'dang-cap-nhat' && 'Đang cập nhật'}
                                                     {status === 'hoan-thanh' && 'Hoàn thành'}
@@ -142,7 +142,7 @@ const SeriesDetail = ({ series }) => {
                         <div className="container">
                             {description && (
                                 <div className="series-description">
-                                    <h4>Synopsis</h4>
+                                    <h4>Giới thiệu</h4>
                                     <div dangerouslySetInnerHTML={{ __html: description }} />
                                 </div>
                             )}

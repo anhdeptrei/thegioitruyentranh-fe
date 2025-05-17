@@ -6,12 +6,12 @@ const NotFoundPages = () => {
     return (
         <div className="container">
             <Helmet>
-                <title>Page Not Found - ReadComic</title>
-                <meta name="description" content="This Page is Not Found on ReadComic" />
+                <title>Page Not Found - thế giới truyện tranh</title>
+                <meta name="description" content="Trang này không tồn tại trên thế giới truyện tranh" />
             </Helmet>
             <div className="text-message not-found">
-                <h2>Sorry</h2>
-                <p>This page cannot be found</p>
+                <h2>Xin lỗi</h2>
+                <p>Trang này không thể được tìm thấy</p>
                 <div className="svg-img">
                     <img src={notFound} alt="404 Not Found" />
                 </div>

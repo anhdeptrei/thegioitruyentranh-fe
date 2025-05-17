@@ -5,7 +5,7 @@ const ChapterList = ({ chapters, id }) => {
     console.log('chapters', chapters);
     return (
         <div className="chapter-list">
-            <h4>Chapter List</h4>
+            <h4>Danh sách chương</h4>
             <div className="chapter-wrapper">
                 {chapters.length > 0 &&
                     chapters.map((chapter, index) => (

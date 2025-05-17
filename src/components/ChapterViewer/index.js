@@ -86,26 +86,26 @@ const ChapterViewer = ({ chapter, chapters }) => {
                             {prevChapter ? (
                                 <Link to={`/chapter/${prevChapter.chapterId}/${chapters.story_id}`}>
                                     <span className="prev">
-                                        <FontAwesomeIcon icon={faArrowLeft} /> Prev
+                                        <FontAwesomeIcon icon={faArrowLeft} /> chương trước
                                     </span>
                                 </Link>
                             ) : (
-                                <span className="prev disabled">
-                                    <FontAwesomeIcon icon={faArrowLeft} /> Prev
+                                <span className="prev-disabled">
+                                    <FontAwesomeIcon icon={faArrowLeft} /> chương trước
                                 </span>
                             )}
-                            <Link to={``}>
+                            {/* <Link to={``}>
                                 <span className="all-chapter">View All Chapters</span>
-                            </Link>
+                            </Link> */}
                             {nextChapter ? (
                                 <Link to={`/chapter/${nextChapter.chapterId}/${chapters.story_id}`}>
                                     <span className="next">
-                                        Next <FontAwesomeIcon icon={faArrowRight} />
+                                        Chương sau <FontAwesomeIcon icon={faArrowRight} />
                                     </span>
                                 </Link>
                             ) : (
-                                <span className="next disabled">
-                                    Next <FontAwesomeIcon icon={faArrowRight} />
+                                <span className="next-disabled">
+                                    Chương sau <FontAwesomeIcon icon={faArrowRight} />
                                 </span>
                             )}
                         </div>
@@ -121,26 +121,26 @@ const ChapterViewer = ({ chapter, chapters }) => {
                         {prevChapter ? (
                             <Link to={`/chapter/${prevChapter.chapterId}/${chapters.story_id}`}>
                                 <span className="prev">
-                                    <FontAwesomeIcon icon={faArrowLeft} /> Prev
+                                    <FontAwesomeIcon icon={faArrowLeft} /> Chương trước
                                 </span>
                             </Link>
                         ) : (
-                            <span className="prev disabled">
-                                <FontAwesomeIcon icon={faArrowLeft} /> Prev
+                            <span className="prev-disabled">
+                                <FontAwesomeIcon icon={faArrowLeft} /> Chương trước
                             </span>
                         )}
-                        <Link to={``}>
+                        {/* <Link to={``}>
                             <span className="all-chapter">View All Chapters</span>
-                        </Link>
+                        </Link> */}
                         {nextChapter ? (
                             <Link to={`/chapter/${nextChapter.chapterId}/${chapters.story_id}`}>
                                 <span className="next">
-                                    Next <FontAwesomeIcon icon={faArrowRight} />
+                                    Chương sau <FontAwesomeIcon icon={faArrowRight} />
                                 </span>
                             </Link>
                         ) : (
-                            <span className="next disabled">
-                                Next <FontAwesomeIcon icon={faArrowRight} />
+                            <span className="next-disabled">
+                                Chương sau <FontAwesomeIcon icon={faArrowRight} />
                             </span>
                         )}
                     </div>

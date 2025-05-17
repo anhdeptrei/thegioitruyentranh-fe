@@ -44,7 +44,14 @@ p {
     padding: 10px;
     border-radius: 5px;
 }
-.header {
+.header-top {
+    width: 100%;
+    display: inline-block;
+    position: relative;
+    background: #c8c4c4;
+    z-index: 101;
+}
+.header-bottom {
     width: 100%;
     display: inline-block;
     position: relative;
@@ -52,7 +59,7 @@ p {
     box-shadow: 0 5px 4px rgba(0, 0, 0, 0.05);
     z-index: 100;
 }
-.header .container {
+.header-bottom .container {
     max-width: 1100px;
 }
 .logo {
@@ -315,6 +322,16 @@ p {
     border-radius: 5px;
     font-weight: 600;
     margin: 5px;
+}
+.navi-chapter .prev-disabled,
+.navi-chapter .next-disabled {
+    background: #f5f5f5;
+    color: #aaa;
+    font-weight: 600;
+    display: inline-block;
+    padding: 8px 10px;
+    margin: 5px;
+    border-radius: 5px;
 }
 .current-page span {
     background: #6e6dfb;
@@ -698,7 +715,7 @@ p {
 .theme-dark .text-message {
     background: #45475a;
 }
-.theme-dark .header {
+.theme-dark .header-bottom {
     background: #3b3c4c;
 }
 .theme-dark .logo {
@@ -903,5 +920,736 @@ p {
     .series-item {
         flex: 0 0 50%;
         max-width: 50%;
+    }
+}
+
+/* Existing CSS */
+/* ... (giữ nguyên các quy tắc CSS hiện có) ... */
+
+/* Add styles for auth buttons */
+.auth-buttons {
+    float: right;
+    display: flex;
+    align-items: center;
+    padding: 16px; /* Align vertically with search and dark mode toggle */
+    padding-right: 10px; /* Align horizontally */
+}
+
+.auth-button {
+    background: #f1f1f1;
+    color: #444;
+    padding: 8px 15px;
+    border-radius: 5px;
+    font-weight: 600;
+    transition: 0.2s;
+    margin-left: 10px; /* Space between buttons */
+}
+
+.auth-button:hover {
+    background: #6e6dfb !important;
+    color: #fff !important;
+}
+
+/* Dark mode styles for auth buttons */
+/* This rule applies to desktop */
+.theme-dark .auth-button {
+    background: #45475a;
+    color: #eee;
+}
+
+/* --- Search Bar Positioning --- */
+
+/* Base styles (Desktop first) */
+/* Show the desktop search bar in header-top */
+.header-top .search.desktop-search {
+    float: right;
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    padding-right: 10px;
+}
+
+/* Hide the mobile search bar on desktop */
+.header-bottom .search.mobile-search {
+    display: none;
+}
+
+/* Hide mobile search toggle on desktop */
+.showsearch {
+    display: none;
+}
+
+/* --- Dark Mode Toggle Positioning --- */
+
+/* Base styles (Desktop first) */
+/* Show the desktop dark mode toggle in header-top */
+.header-top .darkmode-toggle.desktop-darkmode-toggle {
+    float: right; /* Align to the right */
+    align-items: center;
+    padding: 20px 0; /* Adjust padding to align with search and auth buttons */
+    padding-top: 22px; /* Fine-tune vertical alignment */
+    margin-right: 15px;
+    overflow: hidden;
+    position: relative;
+    display: flex; /* Ensure it's displayed */
+}
+
+/* Hide the mobile dark mode toggle on desktop */
+.header-bottom .darkmode-toggle.mobile-darkmode-toggle {
+    display: none;
+}
+
+/* Existing dark mode toggle styles (apply to both via base class) */
+.darkmode-toggle .mode {
+    background: #eee;
+    border: solid 2px #f1f1f1;
+    padding: 2px;
+    display: flex;
+    border-radius: 50px;
+    color: #fff;
+    box-sizing: border-box;
+    position: relative;
+    cursor: pointer;
+}
+.darkmode-toggle .fa-moon {
+    color: #f1c40f;
+    padding: 0 2px;
+    font-size: 15px;
+}
+.darkmode-toggle .fa-sun {
+    color: #f39c12;
+    padding: 0.5px 2px;
+    font-size: 14px;
+}
+.darkmode-toggle .toggle {
+    position: absolute;
+    top: 1px;
+    left: 2px;
+    background: #fff;
+    width: 17px;
+    height: 17px;
+    border-radius: 99%;
+    transition: transform 0.5s;
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.05);
+}
+/* Use attribute selector for checked state based on new IDs */
+.darkmode-toggle input[type='checkbox']:checked + .mode {
+    background: #6e6dfb;
+    border-color: #6e6dfb;
+}
+.darkmode-toggle input[type='checkbox']:checked + .mode .toggle {
+    transform: translateX(20px);
+}
+
+/* Media query adjustments (Mobile - screens <= 900px) */
+@media (max-width: 900px) {
+    /* Existing mobile styles */
+    /* ... (giữ nguyên các quy tắc media query hiện có cho navigation, logo, v.v.) ... */
+
+    /* Hide desktop search on mobile */
+    .header-top .search.desktop-search {
+        display: none;
+    }
+
+    /* Show mobile search and hide desktop search */
+    .header-bottom .search.mobile-search {
+        display: block; /* Show mobile search */
+        float: none; /* Remove float */
+        width: 100%;
+        padding: 0;
+        position: absolute;
+        background: #fff;
+        /* Adjust margin-top based on header-bottom height */
+        margin-top: 65px; /* Assuming header-bottom has similar height to header-top */
+        max-height: 0;
+        z-index: 4;
+        overflow: hidden;
+        transition: 0.2s;
+    }
+
+    /* Show mobile search toggle */
+    .showsearch {
+        display: inline-block;
+    }
+
+    /* Adjust mobile search box padding/margin */
+    .header-bottom .search.mobile-search .search-box {
+        margin: 10px;
+        width: 100%;
+    }
+
+    .header-bottom .search.mobile-search .search-box .search-input {
+        width: 100%;
+    }
+
+    .header-bottom .search.mobile-search .search-box .search-input:focus {
+        width: 100%;
+    }
+
+    /* Mobile search toggle functionality (updated selector) */
+    /* This rule needs to be in the media query and target the search in header-bottom */
+    .header-bottom .navigation-wrapper #showsearch:checked ~ .search.mobile-search {
+        border-top: solid 4px #6e6dfb;
+        border-bottom: solid 2px #f1f1f1;
+        max-height: 1000px;
+    }
+
+    /* Hide desktop dark mode toggle on mobile */
+    .header-top .darkmode-toggle.desktop-darkmode-toggle {
+        display: none;
+    }
+
+    /* Show mobile dark mode toggle on mobile */
+    .header-bottom .darkmode-toggle.mobile-darkmode-toggle {
+        display: flex; /* Or block/inline-block depending on desired layout */
+        float: right; /* Keep float right for alignment in header-bottom */
+        align-items: center;
+        padding: 20px 0;
+        padding-top: 22px;
+        margin-right: 15px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    /* Existing auth button media query styles */
+    .auth-buttons {
+        float: none;
+        display: block;
+        width: 100%;
+        padding: 10px;
+        margin: 0;
+        text-align: center;
+    }
+
+    .auth-button {
+        display: inline-block;
+        margin: 5px;
+    }
+
+    /* Dark mode styles in media query */
+    .theme-dark .navigation,
+    .theme-dark .header-bottom .search.mobile-search {
+        /* Apply dark mode background to mobile search */
+        background: #3b3c4c;
+    }
+
+    .theme-dark .navigation-wrapper #showmenu:checked ~ .navigation,
+    .theme-dark .navigation-wrapper #showsearch:checked ~ .search.mobile-search {
+        /* Apply dark mode border color */
+        border-bottom-color: #45475a;
+    }
+
+    /* Dark mode for mobile search input */
+    .theme-dark .header-bottom .search.mobile-search .search-box .search-input {
+        background: #2f303e;
+        color: #aaa;
+        border-color: #3b3c4c;
+    }
+    .theme-dark .header-bottom .search.mobile-search .search-box .search-input:focus {
+        border-color: #45475a;
+    }
+
+    /* Dark mode for mobile dark mode toggle */
+    .theme-dark .header-bottom .darkmode-toggle.mobile-darkmode-toggle .mode {
+        background: #6e6dfb; /* Match checked state background */
+        border-color: #6e6dfb;
+    }
+    /* Note: The toggle position is handled by the general .darkmode-toggle rules */
+
+    /* Update this rule for auth buttons background in mobile dark mode */
+    .theme-dark .auth-buttons {
+        background: #2f303e; /* Match the main dark theme background */
+    }
+}
+
+/* Existing media queries */
+/* ... */
+/* Update this rule for dark mode header-top */
+.theme-dark .header-top {
+    background: #2f303e; /* Match the main dark theme background */
+}
+
+/* Existing CSS */
+/* ... */
+
+/* --- Modal Styles --- */
+
+.modal-overlay {
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.6); /* Black background with opacity */
+    display: flex; /* Use flexbox to center content */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+}
+
+.modal-content {
+    background-color: #fefefe; /* White background for the modal content */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    max-width: 500px; /* Max width of the modal */
+    width: 90%; /* Responsive width */
+    position: relative; /* Needed for absolute positioning of close button */
+    /* Add styles for the form elements inside if needed */
+    h2 {
+        text-align: center;
+        margin-top: 0;
+        margin-bottom: 20px;
+        color: #333; /* Adjust color for dark mode later */
+    }
+    form div {
+        margin-bottom: 15px;
+    }
+    form label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 600;
+        color: #555; /* Adjust color for dark mode later */
+    }
+    form input[type='text'],
+    form input[type='password'] {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    }
+    form button[type='submit'] {
+        width: 100%;
+        background-color: #6e6dfb;
+        color: white;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 600;
+        transition: background-color 0.2s;
+    }
+    form button[type='submit']:hover {
+        background-color: #605fe0;
+    }
+    p {
+        text-align: center;
+        margin-top: 15px;
+        font-size: 14px;
+        color: #555; /* Adjust color for dark mode later */
+    }
+    p button {
+        background: none;
+        border: none;
+        color: #6e6dfb;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        padding: 0;
+        text-decoration: underline;
+    }
+    p button:hover {
+        color: #605fe0;
+    }
+}
+
+.modal-close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #aaa;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.modal-close-button:hover,
+.modal-close-button:focus {
+    color: #777;
+    text-decoration: none;
+    outline: none;
+}
+
+/* Dark mode styles for Modal */
+.theme-dark .modal-content {
+    background-color: #3b3c4c; /* Dark background for modal content */
+    h2 {
+        color: #eee; /* Light color for heading */
+    }
+    form label {
+        color: #bbb; /* Lighter color for labels */
+    }
+    form input[type='text'],
+    form input[type='email'],
+    form input[type='password'] {
+        background-color: #2f303e; /* Darker background for inputs */
+        color: #eee; /* Light text color for inputs */
+        border-color: #45475a; /* Darker border */
+    }
+    form input[type='text']:focus,
+    form input[type='email']:focus,
+    form input[type='password']:focus {
+        border-color: #6e6dfb; /* Highlight color on focus */
+    }
+    p {
+        color: #bbb; /* Lighter color for paragraph text */
+    }
+    p button {
+        color: #6e6dfb; /* Keep link color */
+    }
+    p button:hover {
+        color: #605fe0; /* Keep hover color */
+    }
+}
+/* --- User Profile and Menu Styles --- */
+.user-profile {
+    float: right; /* Align with other right-aligned items */
+    display: flex;
+    align-items: center;
+    padding: 16px; /* Adjust padding to align vertically */
+    padding-right: 10px;
+    position: relative; /* Needed for absolute positioning of the menu */
+    cursor: pointer;
+    color: #444; /* Default color */
+    transition: 0.2s;
+    z-index: 105; /* Added z-index to ensure it stacks above header-bottom */
+}
+
+.user-profile:hover {
+    color: #6e6dfb; /* Hover color */
+}
+
+.user-icon {
+    font-size: 28px; /* Adjust size as needed */
+    display: flex;
+    align-items: center;
+}
+
+.user-icon span {
+    margin-left: 5px; /* Space between icon and username if displayed */
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.user-menu {
+    position: absolute;
+    top: 100%; /* Position below the icon */
+    right: 0; /* Align to the right */
+    background-color: #fff; /* White background */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    list-style: none;
+    padding: 5px 0;
+    margin: 0;
+    min-width: 150px; /* Minimum width for the menu */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1001; /* Ensure it's above other content */
+}
+
+.user-menu .menu-item {
+    display: block; /* Each item on a new line */
+}
+
+.user-menu .menu-item a,
+.user-menu .menu-item button {
+    display: block;
+    width: 100%;
+    padding: 10px 15px;
+    color: #333; /* Default text color */
+    text-align: left;
+    background: none; /* Remove default button background */
+    border: none; /* Remove default button border */
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 400;
+    transition: 0.2s;
+}
+
+.user-menu .menu-item a:hover,
+.user-menu .menu-item button:hover {
+    background-color: #f1f1f1; /* Hover background */
+    color: #6e6dfb; /* Hover text color */
+}
+
+.user-menu .menu-item button {
+    /* Specific styles for the logout button if needed */
+}
+
+/* --- Modal Styles --- */
+
+.modal-overlay {
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.6); /* Black background with opacity */
+    display: flex; /* Use flexbox to center content */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+}
+
+.modal-content {
+    background-color: #fefefe; /* White background for the modal content */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    max-width: 500px; /* Max width of the modal */
+    width: 90%; /* Responsive width */
+    position: relative; /* Needed for absolute positioning of close button */
+    /* Add styles for the form elements inside if needed */
+    h2 {
+        text-align: center;
+        margin-top: 0;
+        margin-bottom: 20px;
+        color: #333; /* Adjust color for dark mode later */
+    }
+    form div {
+        margin-bottom: 15px;
+    }
+    form label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 600;
+        color: #555; /* Adjust color for dark mode later */
+    }
+    form input[type="text"], /* Added text type for username */
+    form input[type="email"],
+    form input[type="password"] {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    }
+    form button[type='submit'] {
+        width: 100%;
+        background-color: #6e6dfb;
+        color: white;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 600;
+        transition: background-color 0.2s;
+    }
+    form button[type='submit']:hover {
+        background-color: #605fe0;
+    }
+    p {
+        text-align: center;
+        margin-top: 15px;
+        font-size: 14px;
+        color: #555; /* Adjust color for dark mode later */
+    }
+    p button {
+        background: none;
+        border: none;
+        color: #6e6dfb;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        padding: 0;
+        text-decoration: underline;
+    }
+    p button:hover {
+        color: #605fe0;
+    }
+}
+
+.modal-close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #aaa;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.modal-close-button:hover,
+.modal-close-button:focus {
+    color: #777;
+    text-decoration: none;
+    outline: none;
+}
+
+/* --- Dark mode styles --- */
+/* Added/Modified dark mode rules */
+.theme-dark {
+    background: #2f303e;
+    color: #eee;
+}
+.theme-dark .text-message {
+    background: #45475a;
+}
+/* Dark mode header-top background */
+.theme-dark .header-top {
+    background: #2f303e; /* Match the main dark theme background */
+}
+/* Dark mode header-bottom background */
+.theme-dark .header-bottom {
+    background: #3b3c4c;
+}
+.theme-dark .logo {
+    color: #eee;
+}
+.theme-dark .navigation .menu-item a {
+    background: #45475a;
+}
+.theme-dark .search-box .search-input {
+    background: #2f303e;
+    color: #aaa;
+    border-color: #3b3c4c;
+}
+.theme-dark .search-box .search-input:focus {
+    border-color: #45475a;
+}
+.theme-dark .showmenu {
+    color: #eee;
+    background: #45475a;
+}
+.theme-dark .showsearch {
+    color: #eee;
+    background: #45475a;
+}
+.theme-dark .series-content {
+    border-color: #3b3c4c;
+}
+.theme-dark .series-preview ul li a {
+    background: #45475a;
+    color: #eee;
+}
+.theme-dark .series-preview ul li .date {
+    color: #bbb;
+}
+.theme-dark .pagination {
+    border-color: #3b3c4c; /* Corrected from 3b3c */
+}
+.theme-dark .pagination-list li a {
+    background: #45475a;
+}
+.theme-dark .prev-page.disabled span,
+.theme-dark .next-page.disabled span {
+    background: #3a3c4d;
+    color: #aaa;
+}
+.theme-dark .view-latest {
+    border-color: #3b3c4c;
+}
+.theme-dark .view-latest a {
+    background: #45475a;
+}
+.theme-dark .series-details-top {
+    background: #45475a;
+}
+.theme-dark .series-info ul {
+    background: #2f303e;
+}
+.theme-dark .series-description {
+    border-color: #3b3c4c;
+}
+.theme-dark .series-genres a {
+    background: #3b3c4c;
+}
+.theme-dark .chapter-wrapper::-webkit-scrollbar-thumb {
+    background-color: #6e6dfb; /* Adjust scrollbar color for dark mode */
+}
+.theme-dark .chapter-wrapper::-webkit-scrollbar {
+    background-color: #3b3c4c; /* Adjust scrollbar track color for dark mode */
+}
+.theme-dark .chapter-list .chapter {
+    background: #45475a;
+}
+.theme-dark .viewer-info {
+    border-color: #3b3c4c;
+}
+.theme-dark .all-chapter {
+    background: #45475a;
+}
+.theme-dark .reader-area {
+    border-color: #3b3c4c;
+}
+.theme-dark .comments {
+    border-color: #3b3c4c;
+}
+.theme-dark .history-item {
+    background: #3b3c4c;
+}
+.theme-dark .swal-footer {
+    background-color: #3b3c4c; /* Dark mode for sweetalert footer */
+    border-top-color: #45475a;
+}
+.theme-dark .swal-text {
+    color: #eee; /* Dark mode for sweetalert text */
+}
+
+/* Dark mode styles for User Profile and Menu */
+.theme-dark .user-profile {
+    color: #eee; /* Dark mode icon color */
+}
+
+.theme-dark .user-profile:hover {
+    color: #6e6dfb; /* Dark mode hover color */
+}
+
+.theme-dark .user-menu {
+    background-color: #3b3c4c; /* Dark mode menu background */
+    border-color: #45475a; /* Dark mode border */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.theme-dark .user-menu .menu-item a,
+.theme-dark .user-menu .menu-item button {
+    color: #eee; /* Dark mode text color */
+}
+
+.theme-dark .user-menu .menu-item a:hover,
+.theme-dark .user-menu .menu-item button:hover {
+    background-color: #45475a; /* Dark mode hover background */
+    color: #6e6dfb; /* Dark mode hover text color */
+}
+
+/* Dark mode styles for Modal */
+.theme-dark .modal-content {
+    background-color: #3b3c4c; /* Dark background for modal content */
+    h2 {
+        color: #eee; /* Light color for heading */
+    }
+    form label {
+        color: #bbb; /* Lighter color for labels */
+    }
+    form input[type='text'],
+    form input[type='email'],
+    form input[type='password'] {
+        background-color: #2f303e; /* Darker background for inputs */
+        color: #eee; /* Light text color for inputs */
+        border-color: #45475a; /* Darker border */
+    }
+    form input[type='text']:focus,
+    form input[type='email']:focus,
+    form input[type='password']:focus {
+        border-color: #6e6dfb; /* Highlight color on focus */
+    }
+    p {
+        color: #bbb; /* Lighter color for paragraph text */
+    }
+    p button {
+        color: #6e6dfb; /* Keep link color */
+    }
+    p button:hover {
+        color: #605fe0; /* Keep hover color */
     }
 }
