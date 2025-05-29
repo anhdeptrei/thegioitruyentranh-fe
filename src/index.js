@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from '~/App';
+import AuthContextProvider from './contexts/authContext';
 // import './index.css';
 
 import { BrowserRouter } from 'react-router-dom';
@@ -23,9 +24,16 @@ if (!Array.prototype.at) {
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <React.StrictMode>
-        <BrowserRouter>
+    // <React.StrictMode>
+    //     <BrowserRouter>
+    //         <AuthContextProvider>
+    //             <App />
+    //         </AuthContextProvider>
+    //     </BrowserRouter>
+    // </React.StrictMode>,
+    <BrowserRouter>
+        <AuthContextProvider>
             <App />
-        </BrowserRouter>
-    </React.StrictMode>,
+        </AuthContextProvider>
+    </BrowserRouter>,
 );

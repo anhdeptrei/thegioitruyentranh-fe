@@ -12,14 +12,14 @@ const Genre = () => {
         data: series,
         isLoading,
         error,
-    } = useFetch('https://otruyenapi.com/v1/api/the-loai/' + genre + '?page=' + pages);
+    } = useFetch('http://localhost:8080/categories/detail/' + genre + '?page=' + pages);
     console.log('series', series);
     return (
         <div className="all-list">
             {!error && !isLoading && series && series.error === undefined && (
                 <Helmet>
                     <title>
-                        {series.data.titlePage} - Trang {pages} - Thế giới truyện tranh
+                        {series.category_description} - Trang {pages} - Thế giới truyện tranh
                     </title>
                     <meta
                         name="description"
@@ -27,7 +27,7 @@ const Genre = () => {
                     />
                 </Helmet>
             )}
-            {pages === undefined && <Navigate to={`/genre/${genre}/1/`} replace />} {/* Use Navigate here */}
+            {pages === undefined && <Navigate to={`/genre/${genre}/0/`} replace />} {/* Use Navigate here */}
             {error && (
                 <div className="container">
                     <div className="text-message">{error}</div>
@@ -37,10 +37,10 @@ const Genre = () => {
             <div className="container">
                 {!error && !isLoading && series && series.error && <NotFoundPages />}
                 {!error && !isLoading && series && series.error === undefined && (
-                    <SeriesList series={series} title1="Genre" title2={series.data.titlePage} />
+                    <SeriesList series={series.stories} title1="Thể loại" title2={series.category_name} />
                 )}
                 {!error && !isLoading && series && series.error === undefined && (
-                    <Pagination series={series} url={`/genre/${genre}/`} />
+                    <Pagination series={series.stories} url={`/genre/${genre}/`} />
                 )}
             </div>
         </div>

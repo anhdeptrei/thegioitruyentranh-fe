@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-// Import CSS module if you plan to use it
-// import styles from './RegisterForm.module.scss';
 
 // Assuming this component receives onSwitchToLogin and onClose props from the Modal
 const RegisterForm = ({ onSwitchToLogin, onClose }) => {

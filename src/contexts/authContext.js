@@ -1,4 +1,5 @@
 import { createContext, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export const AuthContext = createContext();
 
@@ -15,6 +16,7 @@ const AuthContextProvider = ({ children }) => {
         }
     });
 
+    const navigate = useNavigate();
     // Effect to save user to localStorage whenever loggedInUser changes
     useEffect(() => {
         if (loggedInUser) {
@@ -26,10 +28,17 @@ const AuthContextProvider = ({ children }) => {
 
     // Function to handle successful login
     const handleLoginSuccess = (userData) => {
-        // Synchronously save user data to localStorage BEFORE updating state
+        // *** Synchronously save user data to localStorage BEFORE navigating ***
         localStorage.setItem('user', JSON.stringify(userData));
-        setLoggedInUser(userData); // Update state
-        console.log('User state updated:', userData);
+
+        setLoggedInUser(userData); // Update state (asynchronous, but localStorage is already saved)
+
+        // Check user role and redirect if admin (role 2)
+        if (userData && userData.role === 2) {
+            console.log('Admin user logged in. Redirecting to admin home.');
+            navigate('/home'); // Redirect to admin home route
+        }
+        // For other roles (0, 1), they will remain on the current page
     };
 
     // Function to handle logout

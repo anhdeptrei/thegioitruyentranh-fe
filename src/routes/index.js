@@ -23,9 +23,12 @@ import Genre from '~/pages/Client/Genre';
 import History from '~/pages/Client/History';
 import Latest from '~/pages/Client/Latest';
 import Series from '~/pages/Client/Series';
+import Setting from '~/pages/Client/Setting';
+import Supportdetail from '~/pages/Admin/Supportdetail';
 import NotFoundPages from '~/components/Notfound/notFoundPages';
 import GlobalStylesAdmin from '~/components/GlobalStyles/admin/GlobalStylesAdmin';
 import GlobalStylesClient from '~/components/GlobalStyles/client/GlobalStylesClient';
+
 //public route
 const publicRoutes = [
     { path: '/home', component: AdminHome, layout: AdminDefaultLayout, globle: GlobalStylesAdmin, role: 'admin' },
@@ -54,6 +57,13 @@ const publicRoutes = [
         role: 'admin',
     },
     { path: '/support', component: Support, layout: AdminDefaultLayout, globle: GlobalStylesAdmin, role: 'admin' },
+    {
+        path: '/supportdetail',
+        component: Supportdetail,
+        layout: AdminDefaultLayout,
+        globle: GlobalStylesAdmin,
+        role: 'admin',
+    },
     {
         path: '/edit-stories',
         component: EditStory,
@@ -93,6 +103,7 @@ const publicRoutes = [
     { path: '/chapter/:chapterid/:id', component: Chapter, layout: DefaultLayout, globle: GlobalStylesClient },
     { path: '/bookmark', component: Bookmark, layout: DefaultLayout, globle: GlobalStylesClient },
     { path: '/history', component: History, layout: DefaultLayout, globle: GlobalStylesClient },
+    { path: '/setting', component: Setting, layout: DefaultLayout, globle: GlobalStylesClient },
     { path: '*', component: NotFoundPages, layout: DefaultLayout, globle: GlobalStylesClient },
 ];
 //private route

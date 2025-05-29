@@ -1,156 +1,23 @@
-// import { Link, NavLink, Navigate } from 'react-router-dom'; // Thay Redirect bằng Navigate
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import { faBarsStaggered } from '@fortawesome/free-solid-svg-icons';
-// import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
-// import { faSun } from '@fortawesome/free-solid-svg-icons';
-// import { faMoon } from '@fortawesome/free-solid-svg-icons';
-// import { useState } from 'react';
-
-// const Header = ({ dark, darkMode }) => {
-//     const [search, setSearch] = useState('');
-
-//     return (
-//         <>
-//             <div className="header-top">
-//                 <div className="container">
-//                     <div className="navigation-wrapper">
-//                         <div className="logo">
-//                             <Link to="/">
-//                                 <span>Read</span>Comic
-//                             </Link>
-//                         </div>
-
-//                         {/* Thêm nút Đăng nhập và Đăng kí */}
-//                         <div className="auth-buttons">
-//                             <Link to="/login" className="auth-button login-button">
-//                                 Đăng nhập
-//                             </Link>
-//                             <Link to="/register" className="auth-button register-button">
-//                                 Đăng kí
-//                             </Link>
-//                         </div>
-//                         {/* Kết thúc thêm nút */}
-
-//                         <input id="showsearch" type="checkbox" role="button" />
-//                         <label className="showsearch" htmlFor="showsearch">
-//                             <FontAwesomeIcon icon={faMagnifyingGlass} />
-//                         </label>
-
-//                         <div className="search">
-//                             <div className="search-box">
-//                                 <input
-//                                     className="search-input"
-//                                     type="text"
-//                                     placeholder="Search..."
-//                                     value={search}
-//                                     onChange={(e) => setSearch(e.target.value)}
-//                                 />
-//                                 {search && <Navigate to={`/search/${search.replace(' ', '+')}/0/`} replace />}
-//                             </div>
-//                         </div>
-//                         <div className="darkmode-toggle">
-//                             <input
-//                                 type="checkbox"
-//                                 name="darkmode"
-//                                 id="darkmode"
-//                                 onChange={darkMode}
-//                                 checked={dark ? 'true' : ''}
-//                             />
-//                             <label htmlFor="darkmode" className="mode">
-//                                 <FontAwesomeIcon icon={faMoon} />
-//                                 <FontAwesomeIcon icon={faSun} />
-//                                 <div className="toggle"></div>
-//                             </label>
-//                         </div>
-//                     </div>
-//                 </div>
-//             </div>
-//             <div className="header-bottom">
-//                 <div className="container">
-//                     <div className="navigation-wrapper">
-//                         <input id="showmenu" type="checkbox" role="button" />
-//                         <label className="showmenu" htmlFor="showmenu">
-//                             <FontAwesomeIcon icon={faBarsStaggered} />
-//                         </label>
-
-//                         {/* <div className="logo">
-//                             <Link to="/">
-//                                 <span>Read</span>Comic
-//                             </Link>
-//                         </div> */}
-
-//                         <ul className="navigation">
-//                             <li className="menu-item">
-//                                 <NavLink to="/" exact={true}>
-//                                     Home
-//                                 </NavLink>
-//                             </li>
-//                             <li className="menu-item">
-//                                 <NavLink to="/series-list/0">Releasing Series</NavLink>
-//                             </li>
-//                             <li className="menu-item">
-//                                 <NavLink to="/completed/0">Completed Series</NavLink>
-//                             </li>
-//                             <li className="menu-item">
-//                                 <NavLink to="/bookmark/">Bookmark</NavLink>
-//                             </li>
-//                             <li className="menu-item">
-//                                 <NavLink to="/history/">History</NavLink>
-//                             </li>
-//                         </ul>
-
-//                         {/* <input id="showsearch" type="checkbox" role="button" />
-//                         <label className="showsearch" htmlFor="showsearch">
-//                             <FontAwesomeIcon icon={faMagnifyingGlass} />
-//                         </label>
-
-//                         <div className="darkmode-toggle">
-//                             <input
-//                                 type="checkbox"
-//                                 name="darkmode"
-//                                 id="darkmode"
-//                                 onChange={darkMode}
-//                                 checked={dark ? 'true' : ''}
-//                             />
-//                             <label htmlFor="darkmode" className="mode">
-//                                 <FontAwesomeIcon icon={faMoon} />
-//                                 <FontAwesomeIcon icon={faSun} />
-//                                 <div className="toggle"></div>
-//                             </label>
-//                         </div>
-
-//                         <div className="search">
-//                             <div className="search-box">
-//                                 <input
-//                                     className="search-input"
-//                                     type="text"
-//                                     placeholder="Search..."
-//                                     value={search}
-//                                     onChange={(e) => setSearch(e.target.value)}
-//                                 />
-//                                 {search && <Navigate to={`/search/${search.replace(' ', '+')}/0/`} replace />}
-//                             </div>
-//                         </div> */}
-//                     </div>
-//                 </div>
-//             </div>
-//         </>
-//     );
-// };
-
-// export default Header;
-import { Link, NavLink, Navigate } from 'react-router-dom';
+import { Link, NavLink, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBarsStaggered, faUserCircle, faCog, faSignOutAlt } from '@fortawesome/free-solid-svg-icons'; // Import user, settings, logout icons
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { faSun } from '@fortawesome/free-solid-svg-icons';
 import { faMoon } from '@fortawesome/free-solid-svg-icons';
-import { useState, useRef, useEffect } from 'react'; // Import useRef and useEffect
+import { useState, useRef, useEffect, useContext } from 'react';
+import { AuthContext } from '~/contexts/authContext';
 
-const Header = ({ dark, darkMode, onOpenLogin, onOpenRegister, loggedInUser, onLogout }) => {
+let debounceTimeout = null;
+
+const Header = ({ dark, darkMode, onOpenLogin, onOpenRegister }) => {
     const [search, setSearch] = useState('');
-    const [showUserMenu, setShowUserMenu] = useState(false); // State for user menu visibility
-    const userMenuRef = useRef(null); // Ref for the user menu div
+    const [showUserMenu, setShowUserMenu] = useState(false);
+    const [suggestions, setSuggestions] = useState([]); // Danh sách gợi ý truyện
+    const [showDropdown, setShowDropdown] = useState(false);
+    const userMenuRef = useRef(null);
+    const { loggedInUser, handleLogout } = useContext(AuthContext);
+    const location = useLocation();
+    const navigate = useNavigate();
 
     // Effect to close user menu when clicking outside
     useEffect(() => {
@@ -174,10 +41,79 @@ const Header = ({ dark, darkMode, onOpenLogin, onOpenRegister, loggedInUser, onL
     };
 
     const handleLogoutClick = () => {
-        onLogout(); // Call the logout function passed from parent
+        handleLogout(); // Call the logout function from AuthContext
         setShowUserMenu(false); // Close the menu after logging out
     };
+    useEffect(() => {
+        if (!location.pathname.startsWith('/search')) {
+            setSearch('');
+        }
+    }, [location.pathname]);
 
+    // Gợi ý truyện khi nhập search (debounce 300ms)
+    useEffect(() => {
+        if (!search.trim()) {
+            setSuggestions([]);
+            setShowDropdown(false);
+            return;
+        }
+        setShowDropdown(true);
+        if (debounceTimeout) clearTimeout(debounceTimeout);
+        debounceTimeout = setTimeout(async () => {
+            try {
+                const res = await fetch(
+                    `http://localhost:8080/stories/search?keyword=${encodeURIComponent(search)}&page=0`,
+                );
+                const data = await res.json();
+                // Nếu backend trả về mảng truyện
+                if (Array.isArray(data)) {
+                    setSuggestions(data.slice(0, 7)); // Lấy tối đa 7 gợi ý
+                } else if (Array.isArray(data.content)) {
+                    setSuggestions(data.content.slice(0, 7));
+                } else {
+                    setSuggestions([]);
+                }
+            } catch (err) {
+                setSuggestions([]);
+            }
+        }, 300);
+        return () => clearTimeout(debounceTimeout);
+    }, [search]);
+
+    // Đóng dropdown khi click ra ngoài
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (!event.target.closest('.search-box')) {
+                setShowDropdown(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    const handleSearchKeyDown = (e) => {
+        if (e.key === 'Enter' && search.trim()) {
+            setShowDropdown(false);
+            navigate(`/search/${search.replace(/\s+/g, '+')}/0/`);
+            setSearch('');
+        }
+    };
+    const handleSearchClick = () => {
+        if (search.trim()) {
+            setShowDropdown(false);
+            navigate(`/search/${search.replace(/\s+/g, '+')}/0/`);
+            setSearch('');
+        }
+    };
+    // Khi chọn một truyện trong dropdown
+    const handleSuggestionClick = (story) => {
+        console.log('Selected story:', story);
+        setShowDropdown(false);
+        setSearch('');
+        navigate(`/series/${story.story_id}`); // Điều hướng sang trang chi tiết truyện (tùy route của bạn)
+    };
+
+    console.log('Header component rendered', loggedInUser);
     return (
         <>
             <div className="header-top">
@@ -205,10 +141,20 @@ const Header = ({ dark, darkMode, onOpenLogin, onOpenRegister, loggedInUser, onL
                             <div className="user-profile" ref={userMenuRef}>
                                 {/* Attach ref here */}
                                 <div className="user-icon" onClick={toggleUserMenu}>
-                                    {/* Display username or a default icon */}
-                                    {/* You might want to display loggedInUser.username or loggedInUser.avatar */}
-                                    <FontAwesomeIcon icon={faUserCircle} />
-                                    {/* Optional: Display username next to icon */}
+                                    {/* Hiển thị avatar nếu có, nếu không thì lấy noimage.png */}
+                                    <img
+                                        src={loggedInUser.avatar ? loggedInUser.avatar : '/assets/noimage.png'}
+                                        alt="avatar"
+                                        style={{
+                                            width: 32,
+                                            height: 32,
+                                            borderRadius: '50%',
+                                            objectFit: 'cover',
+                                            marginRight: 8,
+                                            border: '2px solid #6e6dfb',
+                                            background: '#fff',
+                                        }}
+                                    />
                                     <span>{loggedInUser.username}</span>
                                 </div>
                                 {showUserMenu && (
@@ -216,11 +162,12 @@ const Header = ({ dark, darkMode, onOpenLogin, onOpenRegister, loggedInUser, onL
                                         {/* Optional: Display username in menu */}
                                         {/* <li className="menu-item">Xin chào, {loggedInUser.username}</li> */}
                                         <li className="menu-item">
-                                            <Link to="/settings" onClick={() => setShowUserMenu(false)}>
+                                            <Link to="/setting" onClick={() => setShowUserMenu(false)}>
                                                 {/* Close menu on click */}
                                                 <FontAwesomeIcon icon={faCog} /> Cài đặt
                                             </Link>
                                         </li>
+
                                         <li className="menu-item">
                                             <button onClick={handleLogoutClick}>
                                                 {/* Use button for action */}
@@ -234,15 +181,56 @@ const Header = ({ dark, darkMode, onOpenLogin, onOpenRegister, loggedInUser, onL
 
                         {/* Desktop Search Input (remains in header-top) */}
                         <div className="search desktop-search">
-                            <div className="search-box">
+                            <div className="search-box" style={{ position: 'relative' }}>
                                 <input
                                     className="search-input"
                                     type="text"
                                     placeholder="Tìm kiếm..."
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
+                                    onKeyDown={handleSearchKeyDown}
+                                    onFocus={() => search && setShowDropdown(true)}
+                                    autoComplete="off"
                                 />
-                                {search && <Navigate to={`/search/${search.replace(' ', '+')}/0/`} replace />}
+                                {/* Bỏ nút tìm kiếm */}
+                                {showDropdown && suggestions.length > 0 && (
+                                    <div className="search-suggestions-container">
+                                        <ul className="search-suggestions">
+                                            {suggestions.map((story) => {
+                                                const latestChapterNumber =
+                                                    story.highestChapterNumber || story.highest_chapter_number;
+                                                return (
+                                                    <li
+                                                        key={story.storyId || story.id || story.story_id}
+                                                        className="search-suggestion-item"
+                                                        onClick={() => handleSuggestionClick(story)}
+                                                        onMouseDown={(e) => e.preventDefault()}
+                                                    >
+                                                        <img
+                                                            src={
+                                                                story.cover_image ||
+                                                                story.coverImage ||
+                                                                '/assets/noimage.png'
+                                                            }
+                                                            alt={story.title}
+                                                            className="search-suggestion-thumb"
+                                                        />
+                                                        <div className="search-suggestion-info">
+                                                            <div className="search-suggestion-title">
+                                                                {story.title || story.storyTitle}
+                                                            </div>
+                                                            {latestChapterNumber && (
+                                                                <div className="search-suggestion-chapter">
+                                                                    Chapter {latestChapterNumber}
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </li>
+                                                );
+                                            })}
+                                        </ul>
+                                    </div>
+                                )}
                             </div>
                         </div>
 
@@ -294,6 +282,17 @@ const Header = ({ dark, darkMode, onOpenLogin, onOpenRegister, loggedInUser, onL
                             <li className="menu-item">
                                 <NavLink to="/history/">Lịch sử đọc</NavLink>
                             </li>
+                            {loggedInUser && (
+                                <li className="menu-item">
+                                    <a
+                                        href="https://forms.gle/Nh9UYW3rz5tHZQHQ8"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        📝 Yêu cầu dịch truyện
+                                    </a>
+                                </li>
+                            )}
                         </ul>
 
                         {/* Mobile Search Toggle (remains in header-bottom) */}
@@ -304,15 +303,56 @@ const Header = ({ dark, darkMode, onOpenLogin, onOpenRegister, loggedInUser, onL
 
                         {/* Mobile Search Input (remains in header-bottom) */}
                         <div className="search mobile-search">
-                            <div className="search-box">
+                            <div className="search-box" style={{ position: 'relative' }}>
                                 <input
                                     className="search-input"
                                     type="text"
                                     placeholder="Tìm kiếm..."
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
+                                    onKeyDown={handleSearchKeyDown}
+                                    onFocus={() => search && setShowDropdown(true)}
+                                    autoComplete="off"
                                 />
-                                {search && <Navigate to={`/search/${search.replace(' ', '+')}/0/`} replace />}
+                                {/* Bỏ nút tìm kiếm */}
+                                {showDropdown && suggestions.length > 0 && (
+                                    <div className="search-suggestions-container">
+                                        <ul className="search-suggestions">
+                                            {suggestions.map((story) => {
+                                                const latestChapterNumber =
+                                                    story.highestChapterNumber || story.highest_chapter_number;
+                                                return (
+                                                    <li
+                                                        key={story.storyId || story.id || story.story_id}
+                                                        className="search-suggestion-item"
+                                                        onClick={() => handleSuggestionClick(story)}
+                                                        onMouseDown={(e) => e.preventDefault()}
+                                                    >
+                                                        <img
+                                                            src={
+                                                                story.cover_image ||
+                                                                story.coverImage ||
+                                                                '/assets/noimage.png'
+                                                            }
+                                                            alt={story.title}
+                                                            className="search-suggestion-thumb"
+                                                        />
+                                                        <div className="search-suggestion-info">
+                                                            <div className="search-suggestion-title">
+                                                                {story.title || story.storyTitle}
+                                                            </div>
+                                                            {latestChapterNumber && (
+                                                                <div className="search-suggestion-chapter">
+                                                                    Chapter {latestChapterNumber}:{' '}
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </li>
+                                                );
+                                            })}
+                                        </ul>
+                                    </div>
+                                )}
                             </div>
                         </div>
 

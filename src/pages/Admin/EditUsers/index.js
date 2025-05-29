@@ -95,9 +95,10 @@ function EditUsers() {
     };
 
     const uploadFile = async (file) => {
+        console.log('Uploading file:', file);
         const formData = new FormData();
         formData.append('file', file);
-
+        console.log('Form data prepared for upload:', formData);
         try {
             const response = await axios.post('http://localhost:8080/api/files/upload', formData, {
                 headers: {
@@ -249,6 +250,7 @@ function EditUsers() {
                                         accept="image/*"
                                         onChange={async (event) => {
                                             const file = event.target.files[0];
+                                            console.log('Selected file:', file);
                                             if (file) {
                                                 try {
                                                     // Gọi hàm uploadFile để upload file

@@ -1,14 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react'; // Import useContext
+import { AuthContext } from '~/contexts/authContext'; // Import AuthContext
 // Import CSS module if you plan to use it
 // import styles from './LoginForm.module.scss';
 
-// Assuming this component receives onSwitchToRegister, onClose, and onLoginSuccess props
-const LoginForm = ({ onSwitchToRegister, onClose, onLoginSuccess }) => {
-    // Added onLoginSuccess prop
+// Assuming this component receives onSwitchToRegister and onClose props from the Modal
+const LoginForm = ({ onSwitchToRegister, onClose }) => {
+    // Removed onLoginSuccess prop
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+
+    // Get handleLoginSuccess from AuthContext
+    const { handleLoginSuccess } = useContext(AuthContext);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -35,11 +39,17 @@ const LoginForm = ({ onSwitchToRegister, onClose, onLoginSuccess }) => {
             if (response.ok) {
                 const userResponse = await response.json();
                 console.log('Login successful:', userResponse);
-                // Call the success handler passed from parent
-                if (onLoginSuccess) {
-                    onLoginSuccess(userResponse);
+                // Call the success handler from context
+                if (handleLoginSuccess) {
+                    handleLoginSuccess(userResponse);
                 }
-                // onClose() is now called within handleLoginSuccess in DefaultLayout
+                // onClose() is now called within handleLoginSuccess in AuthContextProvider
+                // or DefaultLayout if modal logic is there.
+                // If modal closing is still managed by DefaultLayout, onClose prop is needed.
+                // Let's keep onClose prop for now as modal state is in DefaultLayout.
+                if (onClose) {
+                    onClose(); // Close the modal
+                }
             } else {
                 const errorData = await response.text();
                 console.error('Login failed:', response.status, errorData);

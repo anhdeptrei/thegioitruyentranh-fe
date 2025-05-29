@@ -1,5 +1,5 @@
 import { Box, Icon, IconButton, styled, useTheme, Button, Menu, MenuItem, Typography } from '@mui/material'; // Import Button, Menu, MenuItem, Typography
-import { useContext, useState, useRef } from 'react'; // Import useState, useRef
+import { useContext, useState, useRef, useEffect } from 'react'; // Import useState, useRef, useEffect
 import { ColorModeContext, token } from '~/theme';
 import InputBase from '@mui/material/InputBase';
 import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
@@ -11,12 +11,17 @@ import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle'; // Import user icon
 import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined'; // Import logout icon
 import SettingsOutlined from '@mui/icons-material/SettingsOutlined'; // Import settings icon
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import Badge from '@mui/material/Badge';
+import LoupeOutlinedIcon from '@mui/icons-material/LoupeOutlined';
+import axios from 'axios';
 
 // Accept new props for login state and actions
-function Topbar({ loggedInUser, onLogout, onOpenLogin, onOpenRegister }) {
+function Topbar({ loggedInUser, onLogout }) {
     const theme = useTheme();
     const colors = token(theme.palette.mode);
     const colorMode = useContext(ColorModeContext);
+    const navigate = useNavigate(); // Add useNavigate hook
 
     // State and ref for the user menu
     const [anchorEl, setAnchorEl] = useState(null);
@@ -33,6 +38,11 @@ function Topbar({ loggedInUser, onLogout, onOpenLogin, onOpenRegister }) {
     const handleLogout = () => {
         onLogout(); // Call the logout function passed from parent
         handleMenuClose(); // Close the menu
+    };
+
+    const handleMenuSetting = () => {
+        navigate('/adminsetting'); // Use React Router navigation
+        handleMenuClose();
     };
 
     // Menu ID for accessibility
@@ -54,20 +64,35 @@ function Topbar({ loggedInUser, onLogout, onOpenLogin, onOpenRegister }) {
             open={isMenuOpen}
             onClose={handleMenuClose}
         >
-            {/* Optional: Display username */}
-            {/* {loggedInUser && (
-                 <MenuItem onClick={handleMenuClose}>
-                     <Typography>{loggedInUser.username}</Typography>
-                 </MenuItem>
-            )} */}
-            <MenuItem onClick={handleMenuClose}>
-                <SettingsOutlined sx={{ mr: 1 }} /> Cài đặt
-            </MenuItem>
             <MenuItem onClick={handleLogout}>
                 <ExitToAppOutlinedIcon sx={{ mr: 1 }} /> Đăng xuất
             </MenuItem>
         </Menu>
     );
+
+    // Notification states
+    const [reports, setReports] = useState([]);
+    const [notifAnchorEl, setNotifAnchorEl] = useState(null);
+    const notifOpen = Boolean(notifAnchorEl);
+
+    useEffect(() => {
+        // Fetch all reports for notification
+        axios
+            .get('http://localhost:8080/reports/all')
+            .then((res) => setReports(res.data || []))
+            .catch(() => setReports([]));
+    }, []);
+
+    const handleNotifClick = (event) => {
+        setNotifAnchorEl(event.currentTarget);
+    };
+    const handleNotifClose = () => {
+        setNotifAnchorEl(null);
+    };
+    const handleNotifDetail = (reportId) => {
+        navigate(`/supportdetail?id=${reportId}`);
+        handleNotifClose();
+    };
 
     return (
         <Box display="flex" justifyContent="space-between" p={2}>
@@ -80,31 +105,46 @@ function Topbar({ loggedInUser, onLogout, onOpenLogin, onOpenRegister }) {
             </Box>
 
             {/* ICONS / AUTH BUTTONS */}
-            <Box display="flex">
+            <Box display="flex" alignItems="center">
                 <IconButton onClick={colorMode.toggleColorMode}>
                     {theme.palette.mode == 'dark' ? <DarkModeOutlinedIcon /> : <LightModeOutlinedIcon />}
                 </IconButton>
-                <IconButton>
-                    <NotificationsOutlinedIcon />
-                </IconButton>
-                <IconButton>
-                    <SettingsOutlinedIcon />
-                </IconButton>
-                {/* Conditional rendering based on loggedInUser */}
-                <IconButton
-                    edge="end"
-                    aria-label="account of current user"
-                    aria-controls={menuId}
-                    aria-haspopup="true"
-                    onClick={handleProfileMenuOpen}
-                    color="inherit" // Use theme color
-                    sx={{ ml: 1 }} // Margin left
+                <Badge badgeContent={reports.length} color="error">
+                    <IconButton onClick={handleNotifClick}>
+                        <NotificationsOutlinedIcon />
+                    </IconButton>
+                </Badge>
+                <Button
+                    variant="outlined"
+                    color="error"
+                    onClick={handleLogout}
+                    sx={{ ml: 2, textTransform: 'none', fontWeight: 600 }}
                 >
-                    <AccountCircle /> {/* User icon */}
-                </IconButton>
+                    Đăng xuất
+                </Button>
             </Box>
             {/* Render the user menu */}
             {renderMenu}
+
+            {/* Notification popover menu */}
+            <Menu
+                anchorEl={notifAnchorEl}
+                open={notifOpen}
+                onClose={handleNotifClose}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+            >
+                {reports.length === 0 ? (
+                    <MenuItem disabled>Không có báo cáo mới</MenuItem>
+                ) : (
+                    reports.map((report) => (
+                        <MenuItem key={report.reportId} onClick={() => handleNotifDetail(report.reportId)}>
+                            <LoupeOutlinedIcon sx={{ mr: 1 }} />#{report.reportId} - {report.storyTitle || ''} -{' '}
+                            {report.detail || ''}
+                        </MenuItem>
+                    ))
+                )}
+            </Menu>
         </Box>
     );
 }

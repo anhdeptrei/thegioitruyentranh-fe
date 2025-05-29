@@ -909,6 +909,12 @@ p {
     .theme-dark .navigation-wrapper #showsearch:checked ~ .search {
         border-bottom-color: #45475a;
     }
+    .chapter-viewer .viewer-info .report-button {
+        /* Example: Adjust margin or display */
+        margin-top: 10px;
+        display: block; /* Make it a block element below navi-chapter */
+        text-align: center;
+    }
 }
 @media (max-width: 700px) {
     .series-item {
@@ -1213,7 +1219,10 @@ p {
         color: #555; /* Adjust color for dark mode later */
     }
     form input[type='text'],
-    form input[type='password'] {
+    form input[type='email'],
+    form input[type='password'],
+    form textarea,
+    form select {
         width: 100%;
         padding: 10px;
         border: 1px solid #ccc;
@@ -1232,6 +1241,23 @@ p {
         font-weight: 600;
         transition: background-color 0.2s;
     }
+    form textarea {
+        resize: vertical; /* Allow vertical resizing */
+    }
+
+    form button[type='submit'] {
+        width: 100%;
+        background-color: #6e6dfb;
+        color: white;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 600;
+        transition: background-color 0.2s;
+    }
+
     form button[type='submit']:hover {
         background-color: #605fe0;
     }
@@ -1276,6 +1302,73 @@ p {
     outline: none;
 }
 
+/* Add specific styles for the report button if needed */
+.report-button {
+    background: #e64942; /* Example color for report button */
+    color: #fff;
+    border: none;
+    padding: 8px 15px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 10px; /* Space below navi-chapter */
+    display: inline-block; /* Ensure it's on its own line or next to nav */
+    transition: 0.2s;
+}
+
+.report-button:hover {
+    background: #df4740; /* Darker on hover */
+}
+/* Add styles for the report form container and its elements */
+.report-form-container {
+    /* Add padding, max-width, etc. if needed, but modal-content already provides some */
+    h2 {
+        text-align: center;
+        margin-top: 0;
+        margin-bottom: 20px;
+        color: #333; /* Adjust color for dark mode later */
+    }
+    form div {
+        margin-bottom: 15px;
+    }
+    form label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 600;
+        color: #555; /* Adjust color for dark mode later */
+    }
+    form input[type='text'],
+    form textarea {
+        /* Added textarea */
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+    form textarea {
+        resize: vertical; /* Allow vertical resizing */
+    }
+    form button[type='submit'] {
+        width: 100%;
+        background-color: #6e6dfb;
+        color: white;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 600;
+        transition: background-color 0.2s;
+    }
+    form button[type='submit']:hover {
+        background-color: #605fe0;
+    }
+    /* Add styles for the error message paragraph if needed */
+    p {
+        /* Existing paragraph styles might apply, but you can add specific ones */
+    }
+}
 /* Dark mode styles for Modal */
 .theme-dark .modal-content {
     background-color: #3b3c4c; /* Dark background for modal content */
@@ -1307,6 +1400,7 @@ p {
         color: #605fe0; /* Keep hover color */
     }
 }
+
 /* --- User Profile and Menu Styles --- */
 .user-profile {
     float: right; /* Align with other right-aligned items */
@@ -1652,4 +1746,569 @@ p {
     p button:hover {
         color: #605fe0; /* Keep hover color */
     }
+}
+
+/* --- Review Section Styles --- */
+.review-section {
+    margin: 30px 0 0 0;
+    padding: 20px 0 0 0;
+    border-top: dashed 5px #f1f1f1;
+}
+.review-section h4 {
+    font-size: 20px;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+.review-form {
+    margin-bottom: 20px;
+}
+.rating-stars {
+    margin-bottom: 10px;
+    user-select: none;
+}
+.rating-stars .star {
+    cursor: pointer;
+    color: #ccc;
+    font-size: 22px;
+    transition: color 0.2s;
+    margin-right: 2px;
+}
+.rating-stars .star.active {
+    color: #ffc107;
+}
+.review-form textarea {
+    width: 100%;
+    border-radius: 5px;
+    border: 1.5px solid #ccc;
+    padding: 10px;
+    font-size: 15px;
+    margin-bottom: 10px;
+    resize: vertical;
+    min-height: 60px;
+    transition: border-color 0.2s;
+}
+.review-form textarea:focus {
+    border-color: #6e6dfb;
+    outline: none;
+}
+.review-form button {
+    background: #605fe0;
+    color: #fff;
+    border: none;
+    padding: 8px 18px;
+    font-weight: 700;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.review-form button:disabled {
+    background: #bdbdbd;
+    cursor: not-allowed;
+}
+.review-error {
+    color: #e64942;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+.review-login-message {
+    color: #e64942;
+    font-size: 15px;
+    margin-bottom: 10px;
+}
+.review-list {
+    margin-top: 20px;
+}
+.review-list h5 {
+    font-size: 17px;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+.review-item {
+    background: #f7fafc;
+    border-radius: 5px;
+    padding: 12px 15px;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+.review-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 5px;
+}
+.review-user {
+    font-weight: 700;
+    color: #605fe0;
+}
+.review-rating {
+    margin-left: 5px;
+}
+.review-rating span {
+    color: #ffc107;
+    font-size: 16px;
+}
+.review-date {
+    margin-left: auto;
+    color: #888;
+    font-size: 13px;
+}
+.review-text {
+    font-size: 15px;
+    color: #333;
+}
+.review-empty {
+    color: #888;
+    font-style: italic;
+    margin-top: 10px;
+}
+
+/* --- Dark mode for Review Section --- */
+.theme-dark .review-section {
+    border-top: dashed 5px #23234a;
+}
+.theme-dark .review-form textarea {
+    background: #23234a;
+    color: #fff;
+    border-color: #444;
+}
+.theme-dark .review-form textarea:focus {
+    border-color: #6e6dfb;
+}
+.theme-dark .review-form button {
+    background: #6e6dfb;
+    color: #fff;
+}
+.theme-dark .review-item {
+    background: #23234a;
+    color: #fff;
+}
+.theme-dark .review-user {
+    color: #6e6dfb;
+}
+.theme-dark .review-text {
+    color: #fff;
+}
+.theme-dark .review-date {
+    color: #aaa;
+}
+.theme-dark .review-empty {
+    color: #aaa;
+}
+/* --- Review Pagination Styles --- */
+.review-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    margin-top: 18px;
+    margin-bottom: 5px;
+}
+
+.review-pagination button {
+    background: #f1f1f1;
+    color: #605fe0;
+    border: none;
+    border-radius: 5px;
+    padding: 6px 16px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.review-pagination button:disabled {
+    background: #e0e0e0;
+    color: #aaa;
+    cursor: not-allowed;
+}
+
+.review-pagination span {
+    font-weight: 600;
+    color: #605fe0;
+    font-size: 15px;
+    min-width: 60px;
+    text-align: center;
+    display: inline-block;
+}
+
+/* Dark mode for review pagination */
+.theme-dark .review-pagination button {
+    background: #45475a;
+    color: #6e6dfb;
+}
+
+.theme-dark .review-pagination button:disabled {
+    background: #23234a;
+    color: #888;
+}
+
+.theme-dark .review-pagination span {
+    color: #6e6dfb;
+}
+
+// .chapter-comments {
+//     margin: 30px 0 0 0;
+//     padding: 20px 0 0 0;
+//     border-top: dashed 5px #f1f1f1;
+// }
+// .chapter-comments h4 {
+//     font-size: 20px;
+//     margin-bottom: 10px;
+//     font-weight: 700;
+// }
+// .comment-form,
+// .comment-reply-form,
+// .comment-edit-form {
+//     margin-bottom: 10px;
+//     display: flex;
+//     flex-direction: column;
+//     gap: 8px;
+// }
+// .comment-input {
+//     width: 100%;
+//     border-radius: 5px;
+//     border: 1.5px solid #ccc;
+//     padding: 8px;
+//     font-size: 15px;
+//     resize: vertical;
+//     min-height: 40px;
+//     transition: border-color 0.2s;
+// }
+// .comment-form button,
+// .comment-reply-form button,
+// .comment-edit-form button {
+//     background: #605fe0;
+//     color: #fff;
+//     border: none;
+//     padding: 6px 16px;
+//     font-weight: 700;
+//     border-radius: 5px;
+//     cursor: pointer;
+//     transition: background 0.2s;
+//     margin-right: 8px;
+//     margin-top: 2px;
+//     display: inline-block;
+// }
+// .comment-form button:last-child,
+// .comment-reply-form button:last-child,
+// .comment-edit-form button:last-child {
+//     background: #bdbdbd;
+//     color: #333;
+// }
+// .comment-error {
+//     color: #e64942;
+//     margin-bottom: 8px;
+//     font-size: 14px;
+// }
+// .comment-list {
+//     margin-top: 10px;
+// }
+// .comment-item {
+//     background: #f7fafc;
+//     border-radius: 5px;
+//     padding: 10px 12px;
+//     margin-bottom: 10px;
+//     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+// }
+// .comment-item.reply {
+//     margin-left: 30px;
+//     background: #f1f1f1;
+// }
+// .comment-header {
+//     display: flex;
+//     align-items: center;
+//     gap: 10px;
+//     margin-bottom: 3px;
+// }
+// .comment-user {
+//     font-weight: 700;
+//     color: #605fe0;
+// }
+// .comment-date {
+//     margin-left: auto;
+//     color: #888;
+//     font-size: 13px;
+// }
+// .comment-content {
+//     font-size: 15px;
+//     color: #333;
+//     margin-bottom: 5px;
+// }
+// .comment-actions {
+//     display: flex;
+//     gap: 8px;
+//     margin-bottom: 5px;
+// }
+// .comment-edit-btn,
+// .comment-reply-btn,
+// .comment-show-replies-btn {
+//     background: #f1f1f1;
+//     color: #605fe0;
+//     border: none;
+//     border-radius: 5px;
+//     padding: 3px 10px;
+//     font-size: 13px;
+//     font-weight: 600;
+//     cursor: pointer;
+//     transition: background 0.2s;
+// }
+// .comment-edit-btn:hover,
+// .comment-reply-btn:hover,
+// .comment-show-replies-btn:hover {
+//     background: #6e6dfb;
+//     color: #fff;
+// }
+// .comment-empty {
+//     color: #888;
+//     font-style: italic;
+//     margin-top: 10px;
+// }
+// .comment-pagination {
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
+//     gap: 12px;
+//     margin-top: 18px;
+//     margin-bottom: 5px;
+// }
+// .comment-pagination button {
+//     background: #f1f1f1;
+//     color: #605fe0;
+//     border: none;
+//     border-radius: 5px;
+//     padding: 6px 16px;
+//     font-size: 16px;
+//     font-weight: 700;
+//     cursor: pointer;
+//     transition: background 0.2s, color 0.2s;
+// }
+// .comment-pagination button:disabled {
+//     background: #e0e0e0;
+//     color: #aaa;
+//     cursor: not-allowed;
+// }
+// .comment-pagination span {
+//     font-weight: 600;
+//     color: #605fe0;
+//     font-size: 15px;
+//     min-width: 60px;
+//     text-align: center;
+//     display: inline-block;
+// }
+// /* Dark mode */
+// .theme-dark .chapter-comments {
+//     border-top: dashed 5px #23234a;
+// }
+// .theme-dark .comment-input {
+//     background: #23234a;
+//     color: #fff;
+//     border-color: #444;
+// }
+// .theme-dark .comment-form button,
+// .theme-dark .comment-reply-form button,
+// .theme-dark .comment-edit-form button {
+//     background: #6e6dfb;
+//     color: #fff;
+// }
+// .theme-dark .comment-item {
+//     background: #23234a;
+//     color: #fff;
+// }
+// .theme-dark .comment-item.reply {
+//     background: #2f303e;
+// }
+// .theme-dark .comment-user {
+//     color: #6e6dfb;
+// }
+// .theme-dark .comment-content {
+//     color: #fff;
+// }
+// .theme-dark .comment-date {
+//     color: #aaa;
+// }
+// .theme-dark .comment-empty {
+//     color: #aaa;
+// }
+// .theme-dark .comment-pagination button {
+//     background: #45475a;
+//     color: #6e6dfb;
+// }
+// .theme-dark .comment-pagination button:disabled {
+//     background: #23234a;
+//     color: #888;
+// }
+// .theme-dark .comment-pagination span {
+//     color: #6e6dfb;
+// }
+
+/* Facebook-like comment style for ChapterComments */
+.fb-comments {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    padding: 16px;
+    max-width: 700px;
+    margin: 0 auto;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.fb-comments-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+.fb-comments-subtitle {
+    color: #65676b;
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+.fb-comment-form {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+.fb-comment-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 8px;
+}
+.fb-comment-input {
+    flex: 1;
+    border: 1px solid #ccd0d5;
+    border-radius: 18px;
+    padding: 8px 14px;
+    font-size: 15px;
+    resize: none;
+    background: #f0f2f5;
+    margin-bottom: 0;
+}
+.fb-comment-submit {
+    background: #1877f2;
+    color: #fff;
+    border: none;
+    border-radius: 18px;
+    padding: 6px 18px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-left: 4px;
+    transition: background 0.2s;
+}
+.fb-comment-submit:hover {
+    background: #166fe5;
+}
+.fb-comment-list {
+    margin-top: 8px;
+}
+.fb-comment-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    gap: 8px;
+}
+.fb-reply {
+    margin-left: 48px;
+    background: #f0f2f5;
+    border-radius: 8px;
+    padding: 8px 12px;
+}
+.fb-comment-main {
+    flex: 1;
+}
+.fb-comment-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 2px;
+}
+.fb-comment-user {
+    font-weight: 600;
+    color: #050505;
+    font-size: 15px;
+}
+.fb-comment-date {
+    color: #65676b;
+    font-size: 12px;
+}
+.fb-comment-edit-btn,
+.fb-comment-save-btn,
+.fb-comment-cancel-btn,
+.fb-comment-reply-btn,
+.fb-comment-show-replies-btn {
+    background: none;
+    border: none;
+    color: #65676b;
+    font-size: 13px;
+    cursor: pointer;
+    margin-left: 8px;
+    padding: 0 4px;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+.fb-comment-edit-btn:hover,
+.fb-comment-save-btn:hover,
+.fb-comment-cancel-btn:hover,
+.fb-comment-reply-btn:hover,
+.fb-comment-show-replies-btn:hover {
+    background: #e4e6eb;
+}
+.fb-comment-content {
+    background: #f0f2f5;
+    border-radius: 18px;
+    padding: 8px 14px;
+    font-size: 15px;
+    color: #050505;
+    margin-bottom: 2px;
+    display: inline-block;
+    max-width: 100%;
+    word-break: break-word;
+}
+.fb-comment-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 2px;
+}
+.fb-comment-edit-form,
+.fb-comment-reply-form {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-top: 4px;
+}
+.fb-comment-error {
+    color: #e53935;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+.fb-comment-empty {
+    color: #65676b;
+    text-align: center;
+    margin: 16px 0;
+}
+.fb-comment-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 12px;
+}
+.fb-comment-pagination button {
+    background: #f0f2f5;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.fb-comment-pagination button:disabled {
+    color: #b0b3b8;
+    cursor: not-allowed;
+}
+.fb-comment-pagination button:not(:disabled):hover {
+    background: #e4e6eb;
 }

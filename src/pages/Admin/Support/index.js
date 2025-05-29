@@ -7,6 +7,7 @@ import Header from '~/components/Header';
 import { useNavigate } from 'react-router-dom';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import LoupeOutlinedIcon from '@mui/icons-material/LoupeOutlined';
 
 function Support() {
     const theme = useTheme();
@@ -16,12 +17,12 @@ function Support() {
     const [error, setError] = useState(null);
 
     const columns = [
-        { field: 'reportId', headerName: 'Report ID', flex: 1 }, // ID báo cáo
-        { field: 'userId', headerName: 'User ID', flex: 1 }, // ID người dùng
-        { field: 'chapterId', headerName: 'Chapter ID', flex: 1 }, // ID chương
-        { field: 'detail', headerName: 'Detail', flex: 2 }, // Chi tiết
-        { field: 'description', headerName: 'Description', flex: 2 }, // Mô tả
-        { field: 'createAt', headerName: 'Created At', flex: 1 }, // Ngày tạo
+        { field: 'reportId', headerName: 'Report ID', flex: 1 },
+        { field: 'userName', headerName: 'User Name', flex: 1 },
+        { field: 'storyTitle', headerName: 'Story Title', flex: 2 },
+        { field: 'chapterNumber', headerName: 'Chapter Number', flex: 1 },
+        { field: 'detail', headerName: 'Detail', flex: 2 },
+        { field: 'createAt', headerName: 'Created At', flex: 1 },
         {
             field: 'action',
             headerName: 'Action',
@@ -29,20 +30,19 @@ function Support() {
             renderCell: (params) => {
                 return (
                     <Box display="flex" gap="10px">
-                        {/* Nút Delete */}
                         <Button
                             size="small"
                             sx={{
-                                minWidth: '40px', // Đảm bảo kích thước nhỏ gọn
-                                backgroundColor: colors.redAccent[600],
+                                minWidth: '40px',
+                                backgroundColor: colors.greenAccent[600],
                                 color: colors.grey[100],
                                 '&:hover': {
-                                    backgroundColor: colors.redAccent[500],
+                                    backgroundColor: colors.greenAccent[500],
                                 },
                             }}
-                            onClick={() => handleDelete(params.row)}
+                            onClick={() => handleDetail(params.row)}
                         >
-                            <DeleteOutlinedIcon />
+                            <LoupeOutlinedIcon />
                         </Button>
                     </Box>
                 );
@@ -52,19 +52,9 @@ function Support() {
 
     const navigate = useNavigate();
 
-    const handleDelete = (row) => {
-        if (window.confirm(`Are you sure you want to delete report ID "${row.report_id}"?`)) {
-            axios
-                .delete(`http://localhost:8080/reports/${row.report_id}`)
-                .then(() => {
-                    alert('Report deleted successfully!');
-                    fetchReports();
-                })
-                .catch((error) => {
-                    console.error('Error deleting report:', error);
-                    alert('Failed to delete report. Please try again.');
-                });
-        }
+    const handleDetail = (row) => {
+        // Ví dụ: mở trang chi tiết report hoặc hiển thị modal, ở đây sẽ chuyển hướng đến trang chi tiết report
+        navigate(`/supportdetail?id=${row.reportId}`);
     };
 
     useEffect(() => {

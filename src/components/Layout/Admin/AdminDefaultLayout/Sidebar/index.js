@@ -32,7 +32,7 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
     );
 };
 
-const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
+const Sidebar = ({ isCollapsed, setIsCollapsed, loggedInUser }) => {
     const theme = useTheme();
     const colors = token(theme.palette.mode);
     const location = useLocation(); // Get current location
@@ -108,7 +108,11 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
                                     alt="profile-user"
                                     width="100px"
                                     height="100px"
-                                    src={`../../assets/noimage.png`}
+                                    src={
+                                        loggedInUser && loggedInUser.avatar
+                                            ? loggedInUser.avatar
+                                            : '../../assets/noimage.png'
+                                    }
                                     style={{ cursor: 'pointer', borderRadius: '50%' }}
                                 />
                             </Box>
@@ -119,10 +123,11 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
                                     fontWeight="bold"
                                     sx={{ m: '10px 0 0 0' }}
                                 >
-                                    Ed Roh
+                                    {console.log('Logged in user:', loggedInUser)}
+                                    {loggedInUser && loggedInUser.username ? loggedInUser.username : 'Admin'}
                                 </Typography>
                                 <Typography variant="h5" color={colors.greenAccent[500]}>
-                                    VP Fancy Admin
+                                    Quản trị viên
                                 </Typography>
                             </Box>
                         </Box>
@@ -131,7 +136,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
                     <Box paddingLeft={isCollapsed ? undefined : '10%'}>
                         <Item
                             title="Trang chủ"
-                            to="/"
+                            to="/home"
                             icon={<HomeOutlinedIcon />}
                             selected={selected}
                             setSelected={setSelected}
@@ -183,13 +188,6 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
                             title="Hỗ trợ"
                             to="/support"
                             icon={<SupportAgentOutlinedIcon />}
-                            selected={selected}
-                            setSelected={setSelected}
-                        />
-                        <Item
-                            title="Cài đặt"
-                            to="/adminsetting"
-                            icon={<SettingsSuggestOutlinedIcon />}
                             selected={selected}
                             setSelected={setSelected}
                         />

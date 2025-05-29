@@ -13,7 +13,7 @@ const Modal = ({ isOpen, onClose, children }) => {
     };
 
     return (
-        <div className="modal-overlay" onClick={onClose}>
+        <div className="modal-overlay">
             {' '}
             {/* This will be the dark overlay */}
             <div className="modal-content" onClick={handleContentClick}>

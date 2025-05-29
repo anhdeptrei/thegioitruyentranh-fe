@@ -12,6 +12,8 @@ export const BookmarkReducer = (state, action) => {
             ];
         case 'REMOVE_BOOKMARK':
             return state.filter((series) => series.id !== action.id);
+        case 'REMOVE_ALL_BOOKMARKS':
+            return []; // Return an empty array to clear all bookmarks
         default:
             return state;
     }
