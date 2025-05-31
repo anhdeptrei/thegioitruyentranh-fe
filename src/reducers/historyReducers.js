@@ -75,7 +75,8 @@ export const HistoryReducer = (state, action) => {
                 ];
             }
         case 'REMOVE_HISTORY':
-            return state.filter((chapter) => chapter.id !== action.id);
+            console.log('Removing history for chapter ID:', action.id);
+            return state.filter((chapter) => chapter.lastReadChapterId !== action.id);
         case 'REMOVE_ALL_HISTORIES':
             return []; // Return an empty array to clear all local history
         default:

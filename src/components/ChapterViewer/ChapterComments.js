@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-// import './ChapterCommentsFB.css';
 
 const ChapterComments = ({ chapterId, loggedInUser }) => {
     const [comments, setComments] = useState([]);
@@ -121,7 +120,8 @@ const ChapterComments = ({ chapterId, loggedInUser }) => {
             if (res.ok) {
                 setReplyContent('');
                 setReplyingTo(null);
-                setRefreshKey((k) => k + 1);
+                // Sau khi thêm reply, load lại replies của parent
+                handleShowReplies(parentId);
             } else {
                 setError('Không thể gửi trả lời.');
             }
@@ -131,7 +131,7 @@ const ChapterComments = ({ chapterId, loggedInUser }) => {
     };
 
     // Edit a comment
-    const handleEditComment = async (commentId) => {
+    const handleEditComment = async (commentId, parentCommentId) => {
         if (!editContent.trim()) return;
         setError('');
         try {
@@ -143,16 +143,46 @@ const ChapterComments = ({ chapterId, loggedInUser }) => {
                     userId: loggedInUser.userId,
                     userName: loggedInUser.username,
                     chapterId: chapterId,
-                    parentCommentId: null, // or keep as is
+                    parentCommentId: parentCommentId ? parentCommentId : null, // or keep as is
                     contentComment: editContent,
                 }),
             });
             if (res.ok) {
                 setEditingId(null);
                 setEditContent('');
-                setRefreshKey((k) => k + 1);
+                if (parentCommentId) {
+                    // Nếu là reply, load lại replies của parent
+                    handleShowReplies(parentCommentId);
+                } else {
+                    // Nếu là comment gốc, load lại danh sách comment
+                    setRefreshKey((k) => k + 1);
+                }
             } else {
                 setError('Không thể sửa bình luận.');
+            }
+        } catch {
+            setError('Lỗi kết nối máy chủ.');
+        }
+    };
+
+    // Xóa bình luận
+    const handleDeleteComment = async (commentId, parentCommentId) => {
+        if (!window.confirm('Bạn có chắc chắn muốn xóa bình luận này?')) return;
+        setError('');
+        try {
+            const res = await fetch(`http://localhost:8080/comments/${commentId}`, {
+                method: 'DELETE',
+            });
+            if (res.ok) {
+                if (parentCommentId) {
+                    // Nếu là reply, load lại replies của parent
+                    handleShowReplies(parentCommentId);
+                } else {
+                    // Nếu là comment gốc, load lại danh sách comment
+                    setRefreshKey((k) => k + 1);
+                }
+            } else {
+                setError('Không thể xóa bình luận.');
             }
         } catch {
             setError('Lỗi kết nối máy chủ.');
@@ -162,7 +192,7 @@ const ChapterComments = ({ chapterId, loggedInUser }) => {
     // Render replies for a comment
     const [replies, setReplies] = useState({}); // { [parentId]: [replyList] }
     const handleShowReplies = async (parentId) => {
-        if (replies[parentId]) return; // already loaded
+        // Luôn fetch lại replies để đảm bảo giao diện cập nhật mới nhất
         const replyList = await fetchReplies(parentId);
         setReplies((prev) => ({ ...prev, [parentId]: replyList }));
     };
@@ -179,7 +209,7 @@ const ChapterComments = ({ chapterId, loggedInUser }) => {
             >
                 <img
                     className="fb-comment-avatar"
-                    src={comment.userAvatar || '/assets/user.png'}
+                    src={comment.userAvatar || '/assets/noimage.png'}
                     alt={comment.userName}
                 />
                 <div className="fb-comment-main">
@@ -187,15 +217,23 @@ const ChapterComments = ({ chapterId, loggedInUser }) => {
                         <span className="fb-comment-user">{comment.userName}</span>
                         <span className="fb-comment-date">{new Date(comment.createAt).toLocaleString()}</span>
                         {loggedInUser && comment.userId === loggedInUser.userId && (
-                            <button
-                                className="fb-comment-edit-btn"
-                                onClick={() => {
-                                    setEditingId(comment.commentId);
-                                    setEditContent(comment.contentComment);
-                                }}
-                            >
-                                Sửa
-                            </button>
+                            <>
+                                <button
+                                    className="fb-comment-edit-btn"
+                                    onClick={() => {
+                                        setEditingId(comment.commentId);
+                                        setEditContent(comment.contentComment);
+                                    }}
+                                >
+                                    Sửa
+                                </button>
+                                <button
+                                    className="fb-comment-edit-btn"
+                                    onClick={() => handleDeleteComment(comment.commentId, comment.parentCommentId)}
+                                >
+                                    Xóa
+                                </button>
+                            </>
                         )}
                     </div>
                     {editingId === comment.commentId ? (
@@ -208,7 +246,7 @@ const ChapterComments = ({ chapterId, loggedInUser }) => {
                             />
                             <button
                                 className="fb-comment-save-btn"
-                                onClick={() => handleEditComment(comment.commentId)}
+                                onClick={() => handleEditComment(comment.commentId, comment.parentCommentId)}
                             >
                                 Lưu
                             </button>
@@ -276,11 +314,7 @@ const ChapterComments = ({ chapterId, loggedInUser }) => {
             </div>
             {loggedInUser && (
                 <form className="fb-comment-form" onSubmit={handleAddComment}>
-                    <img
-                        className="fb-comment-avatar"
-                        src={loggedInUser.userAvatar || '/assets/user.png'}
-                        alt="avatar"
-                    />
+                    <img className="fb-comment-avatar" src={loggedInUser.avatar || '/assets/user.png'} alt="avatar" />
                     <textarea
                         className="fb-comment-input"
                         value={newComment}

@@ -22,6 +22,16 @@ function Storychapter() {
         { field: 'follow', headerName: 'Follows', flex: 1 }, // Lượt theo dõi
         { field: 'view_count', headerName: 'Views', flex: 1 }, // Lượt xem
         {
+            field: 'status',
+            headerName: 'Status',
+            flex: 1,
+            valueFormatter: (params) => {
+                if (params === 'dang-cap-nhat') return 'Đang cập nhật';
+                if (params === 'hoan-thanh') return 'Hoàn thành';
+                return params.toString();
+            },
+        },
+        {
             field: 'createAt',
             headerName: 'Created At',
             flex: 1,

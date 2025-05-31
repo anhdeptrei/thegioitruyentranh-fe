@@ -59,7 +59,7 @@ function AdminHome() {
             icon: <MenuBookOutlinedIcon sx={{ fontSize: 40, color: safe(colors.blueAccent, 500, '#1976d2') }} />,
             color: safe(colors.primary, 400, '#f2f0f0'),
             action: (event) => setAnchorEl(event.currentTarget),
-            actionLabel: 'Chọn chức năng',
+            actionLabel: 'Quản lí truyện tranh',
             isStory: true,
         },
         {
@@ -228,12 +228,12 @@ function AdminHome() {
                 >
                     <List>
                         <ListItem disablePadding>
-                            <ListItemButton onClick={() => handleMenuClick('/edit-stories?action=add')}>
+                            <ListItemButton onClick={() => handleMenuClick('/stories')}>
                                 <ListItemText primary="Thêm truyện mới" />
                             </ListItemButton>
                         </ListItem>
                         <ListItem disablePadding>
-                            <ListItemButton onClick={() => handleMenuClick('/stories')}>
+                            <ListItemButton onClick={() => handleMenuClick('/storychapter')}>
                                 <ListItemText primary="Thêm chương mới" />
                             </ListItemButton>
                         </ListItem>

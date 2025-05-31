@@ -32,6 +32,16 @@ function Stories() {
             },
         },
         {
+            field: 'status',
+            headerName: 'Status',
+            flex: 1,
+            valueFormatter: (params) => {
+                if (params === 'dang-cap-nhat') return 'Đang cập nhật';
+                if (params === 'hoan-thanh') return 'Hoàn thành';
+                return params.toString();
+            },
+        },
+        {
             field: 'action',
             headerName: 'Action',
             flex: 1,
@@ -110,7 +120,7 @@ function Stories() {
             .then((response) => {
                 setData(response.data);
                 setLoading(false);
-                console.log('Fetched stories:', response.data);
+                console.log('Fetched stories:', data);
             })
             .catch((error) => {
                 console.error('There was an error fetching the stories!', error);

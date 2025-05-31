@@ -283,7 +283,7 @@ function EditUsers() {
                                         size="small"
                                         variant="contained"
                                         color="secondary"
-                                        onClick={() => setFieldValue('cover_image', '')}
+                                        onClick={() => setFieldValue('avatar', '')} // Sửa lại đúng trường avatar
                                         style={{
                                             backgroundColor: '#f44336', // Màu đỏ cho nút Remove
                                             height: '26px',

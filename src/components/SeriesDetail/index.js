@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faStar } from '@fortawesome/free-solid-svg-icons'; // Thêm icon sao
 import { BookmarkContext } from '~/contexts/bookmarkContext';
 import { HistoryContext } from '~/contexts/historyContext';
 import { AuthContext } from '~/contexts/authContext'; // Import AuthContext
@@ -10,163 +11,7 @@ import { DiscussionEmbed } from 'disqus-react';
 import ChapterList from '../ChapterList';
 import NotFoundPages from '../Notfound/notFoundPages';
 import swal from 'sweetalert';
-
-// Đánh giá truyện với phân trang
-const ReviewSection = ({ storyId, loggedInUser }) => {
-    const [reviewText, setReviewText] = useState('');
-    const [rating, setRating] = useState(0);
-    const [submitting, setSubmitting] = useState(false);
-    const [error, setError] = useState('');
-    const [reviews, setReviews] = useState([]);
-    const [page, setPage] = useState(0);
-    const [totalPages, setTotalPages] = useState(1);
-    const [loadingReviews, setLoadingReviews] = useState(false);
-    const [refreshKey, setRefreshKey] = useState(0); // Thêm state refreshKey
-
-    // Fetch reviews by storyId and page
-    useEffect(() => {
-        const fetchReviews = async () => {
-            setLoadingReviews(true);
-            try {
-                const res = await fetch(`http://localhost:8080/reviews?story_id=${storyId}&page=${page}&size=4`);
-                const data = await res.json();
-                if (Array.isArray(data.content)) {
-                    setReviews(data.content);
-                    setTotalPages(data.totalPages || 1);
-                } else if (Array.isArray(data)) {
-                    setReviews(data);
-                    setTotalPages(1);
-                } else {
-                    setReviews([]);
-                    setTotalPages(1);
-                }
-            } catch (err) {
-                setReviews([]);
-                setTotalPages(1);
-            } finally {
-                setLoadingReviews(false);
-            }
-        };
-        fetchReviews();
-    }, [storyId, page, refreshKey]); // Thêm refreshKey vào dependency
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!reviewText.trim() || rating === 0) {
-            setError('Vui lòng nhập nội dung và chọn số sao!');
-            return;
-        }
-        setSubmitting(true);
-        setError('');
-        try {
-            const res = await fetch('http://localhost:8080/reviews', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    story_id: storyId,
-                    user_id: loggedInUser.userId,
-                    user_name: loggedInUser.username,
-                    review_text: reviewText,
-                    rating: rating,
-                }),
-            });
-            if (res.ok) {
-                setReviewText('');
-                setRating(0);
-                setError('');
-                // Refetch reviews after submit
-                setPage(0);
-                // Force refetch by changing a key
-                setRefreshKey((prev) => prev + 1);
-                swal('Thành công!', 'Đánh giá của bạn đã được gửi.', 'success');
-            } else {
-                setError('Không thể gửi đánh giá.');
-            }
-        } catch (err) {
-            setError('Lỗi kết nối máy chủ.');
-        } finally {
-            setSubmitting(false);
-        }
-    };
-
-    return (
-        <div className="review-section">
-            <h4>Đánh giá truyện</h4>
-            {loggedInUser ? (
-                <form className="review-form" onSubmit={handleSubmit}>
-                    <div className="rating-stars">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                            <span
-                                key={star}
-                                className={star <= rating ? 'star active' : 'star'}
-                                onClick={() => setRating(star)}
-                            >
-                                ★
-                            </span>
-                        ))}
-                    </div>
-                    <textarea
-                        value={reviewText}
-                        onChange={(e) => setReviewText(e.target.value)}
-                        placeholder="Nhập đánh giá của bạn..."
-                        rows={3}
-                        required
-                    />
-                    {error && <div className="review-error">{error}</div>}
-                    <button type="submit" disabled={submitting}>
-                        {submitting ? 'Đang gửi...' : 'Gửi đánh giá'}
-                    </button>
-                </form>
-            ) : (
-                <div className="review-login-message">Vui lòng đăng nhập để đánh giá truyện.</div>
-            )}
-            <div className="review-list">
-                <h5>Đánh giá của người đọc</h5>
-                {loadingReviews ? (
-                    <div className="review-empty">Đang tải đánh giá...</div>
-                ) : reviews && reviews.length > 0 ? (
-                    reviews.map((review) => (
-                        <div className="review-item" key={review.review_id}>
-                            <div className="review-header">
-                                <span className="review-user">{review.user_name}</span>
-                                <span className="rating-stars">
-                                    {[1, 2, 3, 4, 5].map((star) => (
-                                        <span
-                                            key={star}
-                                            className={star <= Number(review.rating) ? 'star active' : 'star'}
-                                        >
-                                            ★
-                                        </span>
-                                    ))}
-                                </span>
-                                <span className="review-date">{new Date(review.create_at).toLocaleString()}</span>
-                            </div>
-                            <div className="review-text">{review.review_text}</div>
-                        </div>
-                    ))
-                ) : (
-                    <div className="review-empty">Chưa có đánh giá nào.</div>
-                )}
-                {/* Pagination */}
-                {totalPages > 1 && (
-                    <div className="review-pagination">
-                        <button onClick={() => setPage(page - 1)} disabled={page === 0}>
-                            &lt;
-                        </button>
-                        <span>
-                            {page + 1} / {totalPages}
-                        </span>
-                        <button onClick={() => setPage(page + 1)} disabled={page + 1 >= totalPages}>
-                            &gt;
-                        </button>
-                    </div>
-                )}
-            </div>
-        </div>
-    );
-};
+import ReviewSection from '../ReviewSection';
 
 const SeriesDetail = ({ series }) => {
     const id = series.story_id; //id truyen
@@ -403,11 +248,23 @@ const SeriesDetail = ({ series }) => {
     // const bookmarkDisabled = storedSeries ? true : false;
 
     const { history } = useContext(HistoryContext);
-    console.log('history', history);
-    const filterHistory = history.filter((item) => item.manga_title === title);
-    const shortHistory = filterHistory.sort(function (a, b) {
-        return new Date(b.date) - new Date(a.date);
-    });
+
+    let shortHistory = [];
+    if (loggedInUser && Array.isArray(loggedInUser.readingHistories)) {
+        // Lấy lịch sử đọc từ server khi đã đăng nhập
+        const filterUserHistory = loggedInUser.readingHistories.filter((item) => item.storyId === id);
+        shortHistory = filterUserHistory
+            .sort((a, b) => new Date(b.viewDate) - new Date(a.viewDate))
+            .map((item) => ({
+                lastReadChapterId: item.lastReadChapter, // id chương cuối cùng đã đọc
+                storyId: item.storyId,
+                // Có thể thêm các trường khác nếu cần
+            }));
+    } else {
+        // Lấy lịch sử đọc từ local khi chưa đăng nhập
+        const filterHistory = history.filter((item) => item.storyId === id);
+        shortHistory = filterHistory.sort((a, b) => new Date(b.readDate || b.date) - new Date(a.readDate || a.date));
+    }
     console.log('shortHistory', shortHistory);
 
     return (
@@ -447,7 +304,7 @@ const SeriesDetail = ({ series }) => {
                                         {shortHistory.length !== 0 && (
                                             <span className="continue">
                                                 <Link
-                                                    to={`/chapter/${shortHistory[0].id}/${shortHistory[0].id_chapters}`}
+                                                    to={`/chapter/${shortHistory[0].lastReadChapterId}/${shortHistory[0].storyId}`}
                                                 >
                                                     Tiếp tục đọc
                                                 </Link>
@@ -472,6 +329,24 @@ const SeriesDetail = ({ series }) => {
                                                 </span>
                                             </li>
                                         )}
+                                        <li>
+                                            <b>Lượt theo dõi</b>
+                                            <span>{series.follow || 0}</span>
+                                        </li>
+                                        <li>
+                                            <b>Đánh giá</b>
+                                            <span>
+                                                {series.favourite ? series.favourite : 0}
+                                                <FontAwesomeIcon
+                                                    icon={faStar}
+                                                    style={{ color: '#FFD700', marginLeft: 4 }}
+                                                />
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <b>Lượt xem</b>
+                                            <span>{series.view_count || 0}</span>
+                                        </li>
                                     </ul>
                                     <div className="series-genres">
                                         {Array.isArray(categories) &&

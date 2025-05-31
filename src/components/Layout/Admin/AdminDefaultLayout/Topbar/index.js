@@ -93,6 +93,23 @@ function Topbar({ loggedInUser, onLogout }) {
         navigate(`/supportdetail?id=${reportId}`);
         handleNotifClose();
     };
+    useEffect(() => {
+        const fetchReports = () => {
+            axios
+                .get('http://localhost:8080/reports/all')
+                .then((res) => setReports(res.data || []))
+                .catch(() => setReports([]));
+        };
+        fetchReports();
+
+        const handleStorage = (e) => {
+            if (e.key === 'refreshReports') {
+                fetchReports();
+            }
+        };
+        window.addEventListener('storage', handleStorage);
+        return () => window.removeEventListener('storage', handleStorage);
+    }, []);
 
     return (
         <Box display="flex" justifyContent="space-between" p={2}>

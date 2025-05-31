@@ -1,4 +1,4 @@
-import { useContext, useState, useRef } from 'react';
+import { useContext, useState, useRef, useEffect } from 'react';
 import { AuthContext } from '~/contexts/authContext';
 import swal from 'sweetalert';
 import axios from 'axios';
@@ -69,15 +69,29 @@ function Setting() {
         setLoading(false);
     };
 
-    // Đổi mật khẩu (giữ nguyên nếu backend có endpoint riêng)
+    // Đổi mật khẩu (kiểm tra mật khẩu cũ với loggedInUser.password)
     const handleChangePassword = async (e) => {
         e.preventDefault();
         setLoading(true);
+        if (oldPassword !== loggedInUser.password) {
+            swal('Lỗi', 'Mật khẩu cũ không đúng!', 'error');
+            setLoading(false);
+            return;
+        }
         try {
-            const response = await fetch(`http://localhost:8080/users/${loggedInUser.user_id}/change-password`, {
+            const response = await fetch(`http://localhost:8080/users/${loggedInUser.userId}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ oldPassword, newPassword }),
+                body: JSON.stringify({
+                    user_id: loggedInUser.user_id,
+                    username,
+                    password: newPassword, // đổi sang mật khẩu mới
+                    email,
+                    detail,
+                    role,
+                    status,
+                    avatar,
+                }),
             });
             if (response.ok) {
                 swal('Thành công', 'Đã đổi mật khẩu!', 'success');
@@ -92,6 +106,14 @@ function Setting() {
         }
         setLoading(false);
     };
+
+    // Đồng bộ lại state khi loggedInUser thay đổi (fix avatar không reset khi đổi user)
+    useEffect(() => {
+        setUsername(loggedInUser?.username || '');
+        setEmail(loggedInUser?.email || '');
+        setDetail(loggedInUser?.detail || '');
+        setAvatar(loggedInUser?.avatar || '');
+    }, [loggedInUser]);
 
     if (!loggedInUser) {
         return (
@@ -112,7 +134,7 @@ function Setting() {
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 18 }}>
                     <div style={{ position: 'relative', marginBottom: 10 }}>
                         <img
-                            src={avatar || '/assets/user.png'}
+                            src={avatar || '/assets/noimage.png'}
                             alt="avatar"
                             style={{
                                 width: 96,

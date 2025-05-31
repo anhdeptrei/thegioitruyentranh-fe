@@ -53,7 +53,7 @@ function EditStory() {
         favourite: 0,
         follow: 0,
         view_count: 0,
-        status: 'sap-ra-mat',
+        status: 'dang-cap-nhat',
         cover_image: null,
         categoryIds: [], // Lưu danh sách ID danh mục
     });
@@ -305,6 +305,22 @@ function EditStory() {
                                 sx={{ gridColumn: 'span 1' }}
                                 disabled // Thêm thuộc tính này để không cho phép nhập
                             />
+                            <FormControl fullWidth sx={{ gridColumn: 'span 1' }}>
+                                <InputLabel id="status-label">Trạng thái</InputLabel>
+                                <Select
+                                    labelId="status-label"
+                                    id="status"
+                                    name="status"
+                                    value={values.status}
+                                    label="status"
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    error={!!touched.status && !!errors.status}
+                                >
+                                    <MenuItem value="dang-cap-nhat">Đang cập nhật</MenuItem>
+                                    <MenuItem value="hoan-thanh">Hoàn thành</MenuItem>
+                                </Select>
+                            </FormControl>
                             <Box gridColumn="span 4" display="flex" flexDirection="column" alignItems="flex-start">
                                 Cover Image
                                 <Button

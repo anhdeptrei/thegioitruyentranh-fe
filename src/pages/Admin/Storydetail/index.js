@@ -162,7 +162,12 @@ function Storydetail() {
                         <strong>Author:</strong> {storyData?.author || 'Unknown'}
                     </Typography>
                     <Typography variant="body1" color="textSecondary" mb="10px">
-                        <strong>Status:</strong> {storyData?.status || 'Unknown'}
+                        <strong>Status:</strong>{' '}
+                        {storyData?.status === 'hoan-thanh'
+                            ? 'Hoàn thành'
+                            : storyData?.status === 'dang-cap-nhat'
+                            ? 'Đang cập nhật'
+                            : storyData?.status || 'Unknown'}
                     </Typography>
                     <Typography variant="body1" color="textSecondary" mb="10px">
                         <strong>Categories:</strong>{' '}

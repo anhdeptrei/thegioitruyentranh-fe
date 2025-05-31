@@ -71,7 +71,7 @@ const DefaultLayout = ({ children }) => {
     return (
         <>
             <Helmet>
-                <title>ReadComic - Read Comic, Manga, Manhwa, Manhua, Online</title>
+                <title>Thế giới truyện tranh - đọc Manga, Manhwa, Manhua trực tuyến</title>
                 <meta name="description" content="ReadComic - Free Read English Comic, Manga, Manhwa, Manhua Online" />
                 <meta name="keyword" content="Read Comic, Read Manga, Read Manhwa, Manhua" />
             </Helmet>

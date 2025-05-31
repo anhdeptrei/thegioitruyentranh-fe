@@ -152,6 +152,7 @@ const History = () => {
                         swal('Lỗi!', 'Đã xảy ra lỗi khi kết nối đến máy chủ.', 'error');
                     }
                 } else {
+                    console.log('historyEntryId: ', historyEntryId);
                     // If no user is logged in, use the local history context
                     // Assuming the local history item ID is the chapter ID
                     // The removeHistory button in JSX passes hist.id, which is chapterId for local history

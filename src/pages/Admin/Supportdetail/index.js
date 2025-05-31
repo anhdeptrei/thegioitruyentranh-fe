@@ -60,7 +60,9 @@ function Supportdetail() {
                 .delete(`http://localhost:8080/reports/${report.reportId}`)
                 .then(() => {
                     alert('Báo cáo đã được hoàn thành!');
-                    window.history.back(); // Quay lại trang trước
+                    localStorage.setItem('refreshReports', Date.now());
+                    // window.history.back(); // Quay lại trang trước
+                    window.location.href = '/support'; // hoặc window.location.reload();
                 })
                 .catch(() => {
                     alert('Xóa báo cáo thất bại.');
