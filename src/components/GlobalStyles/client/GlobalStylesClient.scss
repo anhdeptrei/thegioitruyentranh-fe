@@ -2551,3 +2551,22 @@ p {
     background: #3a3c4d;
     color: #aaa;
 }
+.genre-description {
+    background: #f7fafc;
+    color: #333;
+    border-left: 4px solid #6e6dfb;
+    border-radius: 6px;
+    padding: 12px 18px;
+    margin-bottom: 18px;
+    font-size: 15px;
+    font-style: italic;
+    box-shadow: 0 1px 4px rgba(110, 109, 251, 0.06);
+    transition: background 0.2s, color 0.2s;
+}
+
+.theme-dark .genre-description {
+    background: #23234a;
+    color: #eee;
+    border-left: 4px solid #6e6dfb;
+    box-shadow: 0 1px 4px rgba(110, 109, 251, 0.13);
+}

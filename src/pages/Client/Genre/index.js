@@ -37,7 +37,12 @@ const Genre = () => {
             <div className="container">
                 {!error && !isLoading && series && series.error && <NotFoundPages />}
                 {!error && !isLoading && series && series.error === undefined && (
-                    <SeriesList series={series.stories} title1="Thể loại" title2={series.category_name} />
+                    <SeriesList
+                        series={series.stories}
+                        title1="Thể loại"
+                        title2={series.category_name}
+                        description={series.category_description}
+                    />
                 )}
                 {!error && !isLoading && series && series.error === undefined && (
                     <Pagination series={series.stories} url={`/genre/${genre}/`} />

@@ -8,11 +8,7 @@ import NotFoundPages from '~/components/Notfound/notFoundPages';
 
 const Latest = () => {
     const { pages } = useParams();
-    const {
-        data: series,
-        isLoading,
-        error,
-    } = useFetch('http://localhost:8080/stories/status/dang-cap-nhat/page?page=' + pages);
+    const { data: series, isLoading, error } = useFetch('http://localhost:8080/stories/all/page?page=' + pages);
     console.log('series', series);
     return (
         <div className="all-list">

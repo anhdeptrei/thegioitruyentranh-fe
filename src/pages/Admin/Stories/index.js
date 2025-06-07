@@ -6,7 +6,6 @@ import { token } from '~/theme';
 import Header from '~/components/Header';
 import { useNavigate } from 'react-router-dom';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 
 function Stories() {
     const theme = useTheme();
@@ -63,22 +62,6 @@ function Stories() {
                         >
                             <EditOutlinedIcon />
                         </Button>
-
-                        {/* Nút Delete */}
-                        <Button
-                            size="small"
-                            sx={{
-                                minWidth: '40px', // Đảm bảo kích thước nhỏ gọn
-                                backgroundColor: colors.redAccent[600],
-                                color: colors.grey[100],
-                                '&:hover': {
-                                    backgroundColor: colors.redAccent[500],
-                                },
-                            }}
-                            onClick={() => handleDelete(params.row)}
-                        >
-                            <DeleteOutlinedIcon />
-                        </Button>
                     </Box>
                 );
             },
@@ -89,21 +72,6 @@ function Stories() {
 
     const handleEdit = (row) => {
         navigate(`/edit-stories?action=edit&id=${row.story_id}`);
-    };
-
-    const handleDelete = (row) => {
-        if (window.confirm(`Are you sure you want to delete story "${row.title}"?`)) {
-            axios
-                .delete(`http://localhost:8080/stories/${row.story_id}`)
-                .then(() => {
-                    alert('Story deleted successfully!');
-                    fetchStories();
-                })
-                .catch((error) => {
-                    console.error('Error deleting story:', error);
-                    alert('Failed to delete story. Please try again.');
-                });
-        }
     };
 
     const handleAddStory = () => {

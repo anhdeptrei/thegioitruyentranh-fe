@@ -6,9 +6,7 @@ import { token } from '~/theme';
 import Header from '~/components/Header';
 import { useNavigate, useLocation } from 'react-router-dom';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 
-import LoupeOutlinedIcon from '@mui/icons-material/LoupeOutlined';
 function Storydetail() {
     const theme = useTheme();
     const colors = token(theme.palette.mode);
@@ -87,22 +85,6 @@ function Storydetail() {
                         >
                             <EditOutlinedIcon />
                         </Button>
-
-                        {/* Nút Delete */}
-                        <Button
-                            size="small"
-                            sx={{
-                                minWidth: '40px', // Đảm bảo kích thước nhỏ gọn
-                                backgroundColor: colors.redAccent[600],
-                                color: colors.grey[100],
-                                '&:hover': {
-                                    backgroundColor: colors.redAccent[500],
-                                },
-                            }}
-                            onClick={() => handleDelete(params.row)}
-                        >
-                            <DeleteOutlinedIcon />
-                        </Button>
                     </Box>
                 );
             },
@@ -111,20 +93,6 @@ function Storydetail() {
     console.log('Data:', data); // Kiểm tra dữ liệu chương
     const navigate = useNavigate();
 
-    const handleDelete = (row) => {
-        if (window.confirm(`Are you sure you want to delete chapter "${row.title}"?`)) {
-            axios
-                .delete(`http://localhost:8080/chapters/${row.chapterId}`) // Thay đổi URL để xóa chương
-                .then(() => {
-                    alert('Story deleted successfully!');
-                    fetchStories();
-                })
-                .catch((error) => {
-                    console.error('Error deleting story:', error);
-                    alert('Failed to delete story. Please try again.');
-                });
-        }
-    };
     const handleEdit = (row) => {
         navigate(`/edit-chapter?action=edit&id=${row.chapterId}`);
     };

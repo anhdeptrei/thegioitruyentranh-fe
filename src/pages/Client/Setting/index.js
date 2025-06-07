@@ -9,13 +9,27 @@ function Setting() {
     const [email, setEmail] = useState(loggedInUser?.email || '');
     const [detail, setDetail] = useState(loggedInUser?.detail || '');
     const [avatar, setAvatar] = useState(loggedInUser?.avatar || '');
+    const [preview, setPreview] = useState(loggedInUser?.avatar || '');
+    const [selectedFile, setSelectedFile] = useState(null);
     const [status] = useState(loggedInUser?.status || '');
     const [role] = useState(loggedInUser?.role || 0);
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [avatarUploading, setAvatarUploading] = useState(false);
+    const [oldAvatar, setOldAvatar] = useState(loggedInUser?.avatar || '');
     const fileInputRef = useRef();
+
+    // Khi chọn file, chỉ tạo preview local và lưu file vào state
+    const handleFileChange = (e) => {
+        if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+            console.log('Selected file:', file);
+            setSelectedFile(file);
+            setPreview(URL.createObjectURL(file));
+            console.log('Selected file image:', URL.createObjectURL(file));
+        }
+    };
 
     // Upload avatar file
     const uploadFile = async (file) => {
@@ -28,7 +42,7 @@ function Setting() {
             });
             if (response.data) {
                 setAvatar(response.data); // response.data là URL chuỗi
-                swal('Thành công', 'Đã tải ảnh đại diện!', 'success');
+                // swal('Thành công', 'Đã tải ảnh đại diện!', 'success');
             }
         } catch (error) {
             swal('Lỗi', 'Tải ảnh thất bại!', 'error');
@@ -37,9 +51,84 @@ function Setting() {
     };
 
     // Cập nhật thông tin tài khoản (trừ mật khẩu)
+    // const handleUpdateUser = async (e) => {
+    //     e.preventDefault();
+    //     setLoading(true);
+    //     try {
+    //         const response = await fetch(`http://localhost:8080/users/${loggedInUser.userId}`, {
+    //             method: 'PUT',
+    //             headers: { 'Content-Type': 'application/json' },
+    //             body: JSON.stringify({
+    //                 user_id: loggedInUser.user_id,
+    //                 username,
+    //                 password: loggedInUser.password, // giữ nguyên nếu không đổi
+    //                 email,
+    //                 detail,
+    //                 role,
+    //                 status,
+    //                 avatar,
+    //             }),
+    //         });
+    //         if (response.ok) {
+    //             const updatedUser = await response.json();
+    //             handleLoginSuccess(updatedUser);
+    //             swal('Thành công', 'Đã cập nhật tài khoản!', 'success');
+    //         } else {
+    //             let errorText = await response.text();
+    //             swal('Lỗi', errorText, 'error');
+    //         }
+    //     } catch (err) {
+    //         swal('Lỗi', 'Không thể kết nối máy chủ', 'error');
+    //     }
+    //     setLoading(false);
+    // };
+
+    // Khi nhấn lưu, nếu có file mới thì upload lên cloud trước
     const handleUpdateUser = async (e) => {
         e.preventDefault();
         setLoading(true);
+
+        let avatarUrl = avatar;
+
+        // Nếu có file mới, upload lên cloud
+        if (selectedFile) {
+            setAvatarUploading(true);
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+            try {
+                const response = await axios.post('http://localhost:8080/api/files/upload', formData, {
+                    headers: { 'Content-Type': 'multipart/form-data' },
+                });
+                if (response.data) {
+                    avatarUrl = response.data;
+                }
+                console.log('Uploaded avatar URL:', avatarUrl);
+            } catch (error) {
+                swal('Lỗi', 'Tải ảnh thất bại!', 'error');
+                setAvatarUploading(false);
+                setLoading(false);
+                return;
+            }
+            setAvatarUploading(false);
+        }
+
+        // Nếu avatar cũ là ảnh cloud và khác avatar mới thì xóa ảnh cũ
+        if (
+            oldAvatar &&
+            oldAvatar.startsWith('https://doanvietanh.s3.ap-southeast-1.amazonaws.com/') &&
+            oldAvatar !== avatarUrl
+        ) {
+            const key = oldAvatar.split('/').pop();
+            try {
+                await axios.delete('http://localhost:8080/api/files/delete', {
+                    params: { key },
+                });
+                console.log('Deleted old avatar:', oldAvatar);
+            } catch (err) {
+                // Có thể bỏ qua lỗi xóa ảnh cũ
+            }
+        }
+
         try {
             const response = await fetch(`http://localhost:8080/users/${loggedInUser.userId}`, {
                 method: 'PUT',
@@ -47,18 +136,22 @@ function Setting() {
                 body: JSON.stringify({
                     user_id: loggedInUser.user_id,
                     username,
-                    password: loggedInUser.password, // giữ nguyên nếu không đổi
+                    password: loggedInUser.password,
                     email,
                     detail,
                     role,
                     status,
-                    avatar,
+                    avatar: avatarUrl,
                 }),
             });
             if (response.ok) {
                 const updatedUser = await response.json();
+                console.log('Updated user:', updatedUser);
                 handleLoginSuccess(updatedUser);
                 swal('Thành công', 'Đã cập nhật tài khoản!', 'success');
+                setOldAvatar(avatarUrl);
+                setAvatar(avatarUrl);
+                setSelectedFile(null);
             } else {
                 let errorText = await response.text();
                 swal('Lỗi', errorText, 'error');
@@ -113,6 +206,9 @@ function Setting() {
         setEmail(loggedInUser?.email || '');
         setDetail(loggedInUser?.detail || '');
         setAvatar(loggedInUser?.avatar || '');
+        setPreview(loggedInUser?.avatar || '');
+        setOldAvatar(loggedInUser?.avatar || '');
+        setSelectedFile(null);
     }, [loggedInUser]);
 
     if (!loggedInUser) {
@@ -134,7 +230,7 @@ function Setting() {
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 18 }}>
                     <div style={{ position: 'relative', marginBottom: 10 }}>
                         <img
-                            src={avatar || '/assets/noimage.png'}
+                            src={preview || '/assets/noimage.png'}
                             alt="avatar"
                             style={{
                                 width: 96,
@@ -176,11 +272,7 @@ function Setting() {
                             type="file"
                             accept="image/*"
                             style={{ display: 'none' }}
-                            onChange={(e) => {
-                                if (e.target.files && e.target.files[0]) {
-                                    uploadFile(e.target.files[0]);
-                                }
-                            }}
+                            onChange={handleFileChange}
                         />
                     </div>
                     <div style={{ fontSize: 13, color: '#888', marginBottom: 4 }}>

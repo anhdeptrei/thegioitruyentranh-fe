@@ -8,7 +8,6 @@ import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
 import SecurityOutlinedIcon from '@mui/icons-material/SecurityOutlined';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 
 import Header from '~/components/Header';
 import { useNavigate } from 'react-router-dom';
@@ -106,41 +105,11 @@ function Users() {
                         >
                             <EditOutlinedIcon />
                         </Button>
-
-                        {/* Nút Delete */}
-                        <Button
-                            size="small"
-                            sx={{
-                                minWidth: '40px', // Đảm bảo kích thước nhỏ gọn
-                                backgroundColor: colors.redAccent[600],
-                                color: colors.grey[100],
-                                '&:hover': {
-                                    backgroundColor: colors.redAccent[500],
-                                },
-                            }}
-                            onClick={() => handleDelete(params.row)}
-                        >
-                            <DeleteOutlinedIcon />
-                        </Button>
                     </Box>
                 );
             },
         },
     ];
-    const handleDelete = (row) => {
-        if (window.confirm(`Are you sure you want to delete user ${row.username}?`)) {
-            axios
-                .delete(`http://localhost:8080/users/${row.user_id}`) // Gửi yêu cầu xóa đến API
-                .then(() => {
-                    alert('User deleted successfully!');
-                    fetchPackages(); // Tải lại danh sách người dùng sau khi xóa
-                })
-                .catch((error) => {
-                    console.error('Error deleting user:', error);
-                    alert('Failed to delete user. Please try again.');
-                });
-        }
-    };
     const navigate = useNavigate();
     const handleEdit = (row) => {
         // Xử lý sự kiện khi nhấn nút Edit

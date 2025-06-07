@@ -1,15 +1,19 @@
 import { Link } from 'react-router-dom';
 import NotFoundSeries from '../Notfound/notFoundSeries';
 
-const SeriesList = ({ series, title1, title2 }) => {
+const SeriesList = ({ series, title1, title2, description }) => {
     console.log('Dữ liệu của series:', series.content);
     const listseries = series.content;
     return (
         <div className="serieslist">
             {listseries.length !== 0 && (
-                <h2>
-                    <span>{title1}</span> {title2}
-                </h2>
+                <>
+                    <h2>
+                        <span>{title1}</span> {title2}
+                    </h2>
+                    {/* Hiển thị mô tả thể loại nếu có */}
+                    {description && <div className="genre-description">{description}</div>}
+                </>
             )}
             {!listseries.length && <NotFoundSeries />}
             {!series.error && listseries.length !== 0 && (
@@ -36,8 +40,12 @@ const SeriesList = ({ series, title1, title2 }) => {
                                             //     </li>
                                             // ))}
                                             <li>
-                                                {/* <Link to={chapter.c_slug}>Chapter {chapter.chapter_name}</Link> */}
-                                                Chapter{' ' + seri.highestChapterNumber}
+                                                <a
+                                                    href={`http://localhost:3000/chapter/${seri.chapters[0].chapterId}/${seri.story_id}`}
+                                                >
+                                                    Chapter{' ' + seri.highestChapterNumber}
+                                                </a>
+
                                                 {/* {chapter.c_date && <span className="date">{chapter.c_date}</span>}{chapter.status && <span className="date">{chapter.status}</span>}{!chapter.c_date && !chapter.status && <span className="date-new">New</span>}*/}
                                             </li>
                                         )}

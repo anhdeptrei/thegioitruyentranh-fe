@@ -175,12 +175,18 @@ const ChapterComments = ({ chapterId, loggedInUser }) => {
             });
             if (res.ok) {
                 if (parentCommentId) {
-                    // Nếu là reply, load lại replies của parent
-                    handleShowReplies(parentCommentId);
+                    // Nếu là reply, xóa khỏi replies của parent
+                    setReplies((prev) => ({
+                        ...prev,
+                        [parentCommentId]: (prev[parentCommentId] || []).filter(
+                            (reply) => reply.commentId !== commentId,
+                        ),
+                    }));
                 } else {
-                    // Nếu là comment gốc, load lại danh sách comment
-                    setRefreshKey((k) => k + 1);
+                    // Nếu là comment gốc, xóa khỏi danh sách comments
+                    setComments((prev) => prev.filter((comment) => comment.commentId !== commentId));
                 }
+                setTotalComments((c) => Math.max(0, c - 1));
             } else {
                 setError('Không thể xóa bình luận.');
             }
@@ -197,10 +203,20 @@ const ChapterComments = ({ chapterId, loggedInUser }) => {
         setReplies((prev) => ({ ...prev, [parentId]: replyList }));
     };
 
+    // Hàm đệ quy đếm tổng số reply mọi cấp cho một comment
+    const countAllReplies = (commentId) => {
+        const directReplies = replies[commentId] || [];
+        let total = directReplies.length;
+        for (const reply of directReplies) {
+            total += countAllReplies(reply.commentId);
+        }
+        return total;
+    };
+
     // Đệ quy render comment và replies
     const renderComment = (comment, level = 0) => {
         console.log('Replies loaded:', replies[comment.commentId] ? replies[comment.commentId].length : 0);
-        const replyCount = comment.replyCount || (replies[comment.commentId] ? replies[comment.commentId].length : 0);
+        const replyCount = countAllReplies(comment.commentId);
         return (
             <div
                 className={`fb-comment-item${comment.parentCommentId ? ' fb-reply' : ''}`}

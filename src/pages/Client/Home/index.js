@@ -4,11 +4,7 @@ import { Link } from 'react-router-dom';
 import SkeletonList from '~/components/skeleton/skeletonList';
 
 const Home = () => {
-    const {
-        data: series,
-        isLoading,
-        error,
-    } = useFetch('http://localhost:8080/stories/status/dang-cap-nhat/page?page=0');
+    const { data: series, isLoading, error } = useFetch('http://localhost:8080/stories/all/page?page=0');
     console.log(series);
     return (
         <div className="latest">

@@ -45,6 +45,10 @@ function EditUsers() {
     });
     const [selectedImage, setSelectedImage] = useState(null);
 
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [preview, setPreview] = useState('');
+    const [oldAvatar, setOldAvatar] = useState('');
+
     const queryParams = new URLSearchParams(location.search);
     const action = queryParams.get('action'); // "add" hoặc "edit"
     const userId = queryParams.get('id'); // ID người dùng (nếu có)
@@ -56,6 +60,8 @@ function EditUsers() {
                 .get(`http://localhost:8080/users/${userId}`)
                 .then((response) => {
                     setInitialValues(response.data);
+                    setOldAvatar(response.data.avatar || '');
+                    setPreview(response.data.avatar || '');
                 })
                 .catch((error) => {
                     console.error('Error fetching user data:', error);
@@ -94,27 +100,27 @@ function EditUsers() {
         }
     };
 
-    const uploadFile = async (file) => {
-        console.log('Uploading file:', file);
-        const formData = new FormData();
-        formData.append('file', file);
-        console.log('Form data prepared for upload:', formData);
-        try {
-            const response = await axios.post('http://localhost:8080/api/files/upload', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
-            console.log('File uploaded successfully:', response.data);
-            console.log('File URL:', response.data.url); // URL của file đã upload
-            setSelectedImage(response.data); // Lưu URL của file đã upload
+    // const uploadFile = async (file) => {
+    //     console.log('Uploading file:', file);
+    //     const formData = new FormData();
+    //     formData.append('file', file);
+    //     console.log('Form data prepared for upload:', formData);
+    //     try {
+    //         const response = await axios.post('http://localhost:8080/api/files/upload', formData, {
+    //             headers: {
+    //                 'Content-Type': 'multipart/form-data',
+    //             },
+    //         });
+    //         console.log('File uploaded successfully:', response.data);
+    //         console.log('File URL:', response.data.url); // URL của file đã upload
+    //         setSelectedImage(response.data); // Lưu URL của file đã upload
 
-            return response; // Trả về phản hồi từ server
-        } catch (error) {
-            console.error('Error uploading file:', error);
-            alert('Failed to upload file. Please try again.');
-        }
-    };
+    //         return response; // Trả về phản hồi từ server
+    //     } catch (error) {
+    //         console.error('Error uploading file:', error);
+    //         alert('Failed to upload file. Please try again.');
+    //     }
+    // };
 
     return (
         <Box margin="20px">
@@ -124,13 +130,44 @@ function EditUsers() {
             />
             <Formik
                 // onSubmit={handleFormSubmit}
-                onSubmit={(values) => {
-                    // Kiểm tra nếu avatar không có giá trị, đặt thành null
-                    if (!values.avatar) {
-                        values.avatar = null;
+                onSubmit={async (values) => {
+                    // // Kiểm tra nếu avatar không có giá trị, đặt thành null
+                    // if (!values.avatar) {
+                    //     values.avatar = null;
+                    // }
+                    // console.log('Form values:', values); // Hiển thị tất cả các giá trị đã nhập trong form
+                    // handleFormSubmit(values); // Gọi hàm xử lý gửi form
+                    let avatarUrl = values.avatar;
+
+                    // Nếu có file mới, upload lên cloud
+                    if (selectedFile) {
+                        // Nếu có avatar cũ là ảnh cloud, xóa trước
+                        if (oldAvatar && oldAvatar.startsWith('https://doanvietanh.s3.ap-southeast-1.amazonaws.com/')) {
+                            const key = oldAvatar.split('/').pop();
+                            try {
+                                await axios.delete('http://localhost:8080/api/files/delete', { params: { key } });
+                            } catch (err) {
+                                // Có thể bỏ qua lỗi xóa
+                            }
+                        }
+                        // Upload file mới
+                        try {
+                            const formData = new FormData();
+                            formData.append('file', selectedFile);
+                            const response = await axios.post('http://localhost:8080/api/files/upload', formData, {
+                                headers: { 'Content-Type': 'multipart/form-data' },
+                            });
+                            if (response.data) {
+                                avatarUrl = response.data;
+                            }
+                        } catch (error) {
+                            alert('Failed to upload file. Please try again.');
+                            return;
+                        }
                     }
-                    console.log('Form values:', values); // Hiển thị tất cả các giá trị đã nhập trong form
-                    handleFormSubmit(values); // Gọi hàm xử lý gửi form
+
+                    // Gửi dữ liệu lên backend
+                    handleFormSubmit({ ...values, avatar: avatarUrl });
                 }}
                 initialValues={initialValues}
                 validationSchema={userSchema}
@@ -215,7 +252,6 @@ function EditUsers() {
                                 sx={{ gridColumn: 'span 2' }}
                             >
                                 <MenuItem value={0}>User</MenuItem>
-                                <MenuItem value={1}>Manager</MenuItem>
                                 <MenuItem value={2}>Admin</MenuItem>
                             </TextField>
                             <TextField
@@ -252,17 +288,19 @@ function EditUsers() {
                                             const file = event.target.files[0];
                                             console.log('Selected file:', file);
                                             if (file) {
-                                                try {
-                                                    // Gọi hàm uploadFile để upload file
-                                                    const response = await uploadFile(file);
-                                                    if (response && response.data) {
-                                                        const fileUrl = response.data; // URL trả về từ server
-                                                        setFieldValue('avatar', fileUrl); // Lưu URL vào form
-                                                        console.log('Avatar URL:', fileUrl);
-                                                    }
-                                                } catch (error) {
-                                                    console.error('Error uploading file:', error);
-                                                }
+                                                // try {
+                                                //     // Gọi hàm uploadFile để upload file
+                                                //     const response = await uploadFile(file);
+                                                //     if (response && response.data) {
+                                                //         const fileUrl = response.data; // URL trả về từ server
+                                                //         setFieldValue('avatar', fileUrl); // Lưu URL vào form
+                                                //         console.log('Avatar URL:', fileUrl);
+                                                //     }
+                                                // } catch (error) {
+                                                //     console.error('Error uploading file:', error);
+                                                // }
+                                                setSelectedFile(file);
+                                                setPreview(URL.createObjectURL(file));
                                             }
                                         }}
                                     />
@@ -271,26 +309,25 @@ function EditUsers() {
                                     <div style={{ color: 'red', marginTop: '5px' }}>{errors.avatar}</div>
                                 )}
                             </Box>
-                            {values.avatar && (
+                            {(preview || values.avatar) && (
                                 <Box gridColumn="span 4" display="flex" position="relative">
                                     <img
-                                        alt="Cover"
+                                        alt="Avatar"
                                         width="250px"
-                                        src={values.avatar}
+                                        src={preview || values.avatar}
                                         style={{ borderRadius: '8px' }}
                                     />
                                     <Button
                                         size="small"
                                         variant="contained"
                                         color="secondary"
-                                        onClick={() => setFieldValue('avatar', '')} // Sửa lại đúng trường avatar
-                                        style={{
-                                            backgroundColor: '#f44336', // Màu đỏ cho nút Remove
-                                            height: '26px',
+                                        onClick={() => {
+                                            setPreview('');
+                                            setSelectedFile(null);
+                                            setFieldValue('avatar', '');
                                         }}
-                                        sx={{
-                                            minWidth: '40px', // Đảm bảo kích thước nhỏ gọn
-                                        }}
+                                        style={{ backgroundColor: '#f44336', height: '26px' }}
+                                        sx={{ minWidth: '40px' }}
                                     >
                                         <RemoveCircleOutlinedIcon />
                                     </Button>

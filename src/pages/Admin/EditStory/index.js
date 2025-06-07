@@ -46,6 +46,7 @@ function EditStory() {
     const location = useLocation();
     const navigate = useNavigate();
     const [categories, setCategories] = useState([]); // Danh sách danh mục từ backend
+
     const [initialValues, setInitialValues] = useState({
         title: '',
         author: 'đang cập nhật',
@@ -57,7 +58,9 @@ function EditStory() {
         cover_image: null,
         categoryIds: [], // Lưu danh sách ID danh mục
     });
-    const [selectedImage, setSelectedImage] = useState(null);
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [preview, setPreview] = useState('');
+    const [oldCoverImage, setOldCoverImage] = useState(initialValues.cover_image || '');
 
     const queryParams = new URLSearchParams(location.search);
     const action = queryParams.get('action'); // "add" hoặc "edit"
@@ -75,6 +78,7 @@ function EditStory() {
                         categoryIds: storyData.categories.map((category) => category.category_id), // Lấy danh sách ID danh mục
                     });
                     console.log('Fetched story data:', storyData);
+                    setOldCoverImage(storyData.cover_image || '');
                     console.log(
                         'Initial values:',
                         storyData.categories.map((category) => category.category_id),
@@ -128,25 +132,25 @@ function EditStory() {
         }
     };
 
-    const uploadFile = async (file) => {
-        const formData = new FormData();
-        formData.append('file', file);
+    // const uploadFile = async (file) => {
+    //     const formData = new FormData();
+    //     formData.append('file', file);
 
-        try {
-            const response = await axios.post('http://localhost:8080/api/files/upload', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
-            setSelectedImage(response.data); // Lưu URL của file đã upload
-            console.log('File uploaded successfully:', response.data);
-            console.log('File upload response:', selectedImage); // Log toàn bộ phản hồi từ server
-            return response.data; // Trả về URL của file
-        } catch (error) {
-            console.error('Error uploading file:', error);
-            alert('Failed to upload file. Please try again.');
-        }
-    };
+    //     try {
+    //         const response = await axios.post('http://localhost:8080/api/files/upload', formData, {
+    //             headers: {
+    //                 'Content-Type': 'multipart/form-data',
+    //             },
+    //         });
+    //         setSelectedImage(response.data); // Lưu URL của file đã upload
+    //         console.log('File uploaded successfully:', response.data);
+    //         console.log('File upload response:', selectedImage); // Log toàn bộ phản hồi từ server
+    //         return response.data; // Trả về URL của file
+    //     } catch (error) {
+    //         console.error('Error uploading file:', error);
+    //         alert('Failed to upload file. Please try again.');
+    //     }
+    // };
 
     return (
         <Box margin="20px">
@@ -155,11 +159,47 @@ function EditStory() {
                 subtitle={action === 'edit' ? 'Edit an Existing Story' : 'Create a New Story'}
             />
             <Formik
-                onSubmit={(values) => {
-                    if (!values.cover_image) {
-                        values.cover_image = null;
+                onSubmit={async (values, { setSubmitting }) => {
+                    let coverImageUrl = values.cover_image;
+                    console.log('Submitting values:', coverImageUrl);
+                    // Nếu có file mới và có ảnh cũ là cloud thì xóa ảnh cũ
+                    if (
+                        selectedFile &&
+                        oldCoverImage &&
+                        oldCoverImage.startsWith('https://doanvietanh.s3.ap-southeast-1.amazonaws.com/')
+                    ) {
+                        const key = oldCoverImage.split('/').pop();
+                        try {
+                            await axios.delete('http://localhost:8080/api/files/delete', {
+                                params: { key },
+                            });
+                            console.log('Xóa thành công');
+                        } catch (err) {
+                            // Có thể bỏ qua lỗi xóa ảnh cũ
+                        }
                     }
-                    handleFormSubmit(values);
+                    // Nếu có file mới, upload lên cloud trước
+                    if (selectedFile) {
+                        try {
+                            const formData = new FormData();
+                            formData.append('file', selectedFile);
+                            const response = await axios.post('http://localhost:8080/api/files/upload', formData, {
+                                headers: { 'Content-Type': 'multipart/form-data' },
+                            });
+                            if (response.data) {
+                                coverImageUrl = response.data;
+                            }
+                        } catch (error) {
+                            alert('Failed to upload file. Please try again.');
+                            setSubmitting(false);
+                            return;
+                        }
+                    }
+
+                    // Gửi dữ liệu lên backend
+                    handleFormSubmit({ ...values, cover_image: coverImageUrl });
+                    setOldCoverImage(coverImageUrl); // Cập nhật lại oldCoverImage
+                    setSubmitting(false);
                 }}
                 initialValues={initialValues}
                 validationSchema={storySchema}
@@ -244,6 +284,7 @@ function EditStory() {
                                                         padding: '4px 8px',
                                                         margin: '4px',
                                                         display: 'inline-block',
+                                                        color: '#000',
                                                     }}
                                                 >
                                                     {option.category_name} {/* Hiển thị tên danh mục */}
@@ -333,17 +374,18 @@ function EditStory() {
                                     <VisuallyHiddenInput
                                         type="file"
                                         accept="image/*"
-                                        onChange={async (event) => {
+                                        onChange={(event) => {
                                             const file = event.target.files[0];
                                             if (file) {
-                                                const fileUrl = await uploadFile(file);
-                                                setFieldValue('cover_image', fileUrl);
+                                                setSelectedFile(file);
+                                                setPreview(URL.createObjectURL(file));
+                                                // setFieldValue('cover_image', ''); // Xóa cover_image cũ nếu có
                                             }
                                         }}
                                     />
                                 </Button>
                             </Box>
-                            {values.cover_image && (
+                            {/* {values.cover_image && (
                                 <Box gridColumn="span 4" display="flex" position="relative">
                                     <img
                                         alt="Cover"
@@ -362,6 +404,35 @@ function EditStory() {
                                         }}
                                         sx={{
                                             minWidth: '40px', // Đảm bảo kích thước nhỏ gọn
+                                        }}
+                                    >
+                                        <RemoveCircleOutlinedIcon />
+                                    </Button>
+                                </Box>
+                            )} */}
+                            {(preview || values.cover_image) && (
+                                <Box gridColumn="span 4" display="flex" position="relative">
+                                    <img
+                                        alt="Cover"
+                                        width="250px"
+                                        src={preview || values.cover_image}
+                                        style={{ borderRadius: '8px' }}
+                                    />
+                                    <Button
+                                        size="small"
+                                        variant="contained"
+                                        color="secondary"
+                                        onClick={() => {
+                                            setPreview('');
+                                            setSelectedFile(null);
+                                            setFieldValue('cover_image', '');
+                                        }}
+                                        style={{
+                                            backgroundColor: '#f44336',
+                                            height: '26px',
+                                        }}
+                                        sx={{
+                                            minWidth: '40px',
                                         }}
                                     >
                                         <RemoveCircleOutlinedIcon />

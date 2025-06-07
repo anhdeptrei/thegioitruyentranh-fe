@@ -6,7 +6,6 @@ import { token } from '~/theme';
 import Header from '~/components/Header';
 import { useNavigate } from 'react-router-dom';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 
 function Categories() {
     const theme = useTheme();
@@ -40,22 +39,6 @@ function Categories() {
                             onClick={() => handleEdit(params.row)}
                         >
                             <EditOutlinedIcon />
-                        </Button>
-
-                        {/* Nút Delete */}
-                        <Button
-                            size="small"
-                            sx={{
-                                minWidth: '40px', // Đảm bảo kích thước nhỏ gọn
-                                backgroundColor: colors.redAccent[600],
-                                color: colors.grey[100],
-                                '&:hover': {
-                                    backgroundColor: colors.redAccent[500],
-                                },
-                            }}
-                            onClick={() => handleDelete(params.row)}
-                        >
-                            <DeleteOutlinedIcon />
                         </Button>
                     </Box>
                 );

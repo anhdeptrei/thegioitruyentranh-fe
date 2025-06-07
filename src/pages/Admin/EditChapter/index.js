@@ -19,6 +19,14 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
 import RemoveCircleOutlinedIcon from '@mui/icons-material/RemoveCircleOutlined';
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+
+import Dialog from '@mui/material/Dialog';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
 
 // Validation schema ( giữ nguyên hoặc điều chỉnh nếu cần cho các trường khác)
 const storySchema = yup.object().shape({
@@ -54,6 +62,14 @@ function EditChapter() {
     const [images, setImages] = useState([]);
     const [removedImages, setRemovedImages] = useState([]); // State để lưu danh sách chapterImageId bị xóa
 
+    const [imagesBackup, setImagesBackup] = useState([]);
+
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [successOpen, setSuccessOpen] = useState(false);
+    // State để quản lý dialog xem ảnh
+    const [openImageDialog, setOpenImageDialog] = useState(false);
+    const [currentImageUrl, setCurrentImageUrl] = useState('');
+
     const queryParams = new URLSearchParams(location.search);
     const action = queryParams.get('action'); // "add" hoặc "edit"
     const Id = queryParams.get('id'); // ID của chapter (nếu có) hoặc storyId (nếu action là add)
@@ -75,6 +91,7 @@ function EditChapter() {
                     });
                     // Lưu danh sách hình ảnh cũ vào state images
                     setImages(chapterData.images || []);
+                    setImagesBackup(chapterData.images || []);
                 })
                 .catch((error) => {
                     console.error('Error fetching chapter data:', error);
@@ -93,9 +110,17 @@ function EditChapter() {
     // Handle file input change
     const handleFileChange = (event) => {
         const selectedFiles = Array.from(event.target.files);
-        const newImages = selectedFiles.map((file) => ({
+        const currentMax =
+            images.length > 0
+                ? Math.max(
+                      0,
+                      ...images.map((img) => img.imageNumber).filter((num) => typeof num === 'number' && !isNaN(num)),
+                  )
+                : 0;
+
+        const newImages = selectedFiles.map((file, idx) => ({
             file: file, // Lưu trữ đối tượng File
-            imageNumber: null, // Số thứ tự ảnh sẽ được gán sau hoặc do người dùng nhập
+            imageNumber: currentMax + idx + 1, // Gán số thứ tự ảnh mới
         }));
         // Thêm các file mới vào danh sách images
         setImages([...images, ...newImages]);
@@ -126,6 +151,7 @@ function EditChapter() {
     // Handle form submission
     // Handle form submission
     const handleFormSubmit = async (values) => {
+        setIsSubmitting(true);
         try {
             // Tách danh sách ảnh thành ảnh cũ (có chapterImageId) và file mới (có file)
             const existingImages = images.filter((img) => img.chapterImageId);
@@ -200,17 +226,38 @@ function EditChapter() {
                     images: imagesToIncludeInPut, // Send the final list of images
                 };
                 console.log('Chapter data for PUT:', chapterDataForEdit);
+
                 // Update chapter
                 await axios.put(`http://localhost:8080/chapters/${Id}`, chapterDataForEdit);
 
                 await axios.put(`http://localhost:8080/chapterimages/batch-update`, existingImages);
 
                 // Handle deletion of old images marked for removal
-                await Promise.all(
-                    removedImages.map((imageId) => axios.delete(`http://localhost:8080/chapterimages/${imageId}`)),
-                );
+                // await Promise.all(
+                //     removedImages.map((imageId) => axios.delete(`http://localhost:8080/chapterimages/${imageId}`)),
+                // );
+                // Xóa file ảnh cloud nếu có
+                if (removedImages.length > 0 && imagesBackup.length > 0) {
+                    const imagesToDelete = imagesBackup.filter(
+                        (img) =>
+                            removedImages.includes(img.chapterImageId) &&
+                            img.imageUrl &&
+                            img.imageUrl.startsWith('https://doanvietanh.s3.ap-southeast-1.amazonaws.com/'),
+                    );
+                    const keysToDelete = imagesToDelete.map((img) => img.imageUrl.split('/').pop());
+                    if (keysToDelete.length > 0) {
+                        await axios.delete('http://localhost:8080/api/files/delete-multiple', {
+                            data: keysToDelete,
+                        });
+                    }
+                    // Xóa bản ghi DB như cũ
+                    await Promise.all(
+                        removedImages.map((imageId) => axios.delete(`http://localhost:8080/chapterimages/${imageId}`)),
+                    );
+                }
 
                 alert('Chapter updated successfully!');
+                setSuccessOpen(true);
                 navigate(`/storydetail?id=${values.storyId}`);
             } else {
                 // action === 'add'
@@ -249,7 +296,7 @@ function EditChapter() {
                 }
 
                 alert('Chapter created successfully!');
-                // Chuyển hướng đến trang chi tiết của truyện mà chapter mới thuộc về
+                setSuccessOpen(true);
                 navigate(`/storydetail?id=${values.storyId}`);
             }
         } catch (error) {
@@ -268,6 +315,14 @@ function EditChapter() {
             <Formik onSubmit={handleFormSubmit} initialValues={initialValues} enableReinitialize>
                 {({ values, errors, touched, handleBlur, handleChange, handleSubmit }) => (
                     <form onSubmit={handleSubmit}>
+                        <Backdrop
+                            sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                            open={isSubmitting}
+                        >
+                            <CircularProgress color="inherit" />
+                            <Typography sx={{ ml: 2 }}>Đang lưu dữ liệu, vui lòng chờ...</Typography>
+                        </Backdrop>
+
                         <Box display="flex" justifyContent="flex-end" mb={2}>
                             {' '}
                             {/* Thêm margin-bottom */}
@@ -327,71 +382,155 @@ function EditChapter() {
                             <Typography variant="h6" mb={2}>
                                 Chapter Images
                             </Typography>
-                            {/* Hiển thị danh sách ảnh (cũ hoặc mới) */}
-                            {images.map((image, index) => (
-                                <Box key={index} display="flex" alignItems="center" gap={2} mb={2}>
-                                    {/* Hiển thị URL ảnh cũ hoặc tên file mới */}
-                                    {image.imageUrl ? (
-                                        <TextField
-                                            fullWidth
-                                            variant="filled"
-                                            label="Image URL"
-                                            value={image.imageUrl}
-                                            InputProps={{
-                                                readOnly: true, // URL ảnh cũ chỉ hiển thị, không cho sửa
-                                            }}
-                                        />
-                                    ) : (
-                                        <TextField
-                                            fullWidth
-                                            variant="filled"
-                                            label="File Name"
-                                            value={image.file ? image.file.name : ''} // Hiển thị tên file
-                                            InputProps={{
-                                                readOnly: true, // Tên file chỉ hiển thị
-                                            }}
-                                        />
-                                    )}
+                            {/* Grid view cho danh sách ảnh */}
+                            <Box
+                                display="grid"
+                                gridTemplateColumns="repeat(auto-fill, minmax(160px, 1fr))"
+                                gap={2}
+                                mb={2}
+                            >
+                                {images.map((image, index) => (
+                                    <Box
+                                        key={index}
+                                        display="flex"
+                                        flexDirection="column"
+                                        alignItems="center"
+                                        p={2}
+                                        sx={{
+                                            border: '1px solid #eee',
+                                            borderRadius: 2,
+                                            background: (theme) =>
+                                                theme.palette.mode === 'dark'
+                                                    ? theme.palette.primary[400] || '#232323'
+                                                    : theme.palette.grey[100] || '#f0f0f0',
+                                            boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
+                                        }}
+                                    >
+                                        {/* Hiển thị hình ảnh */}
+                                        {image.imageUrl ? (
+                                            <img
+                                                src={image.imageUrl}
+                                                alt={`Chapter Image ${index + 1}`}
+                                                style={{
+                                                    width: 120,
+                                                    height: 160,
+                                                    objectFit: 'cover',
+                                                    borderRadius: 6,
+                                                    marginBottom: 8,
+                                                    border: '1px solid #e0e0e0',
+                                                }}
+                                                onClick={() => {
+                                                    setCurrentImageUrl(
+                                                        image.imageUrl || URL.createObjectURL(image.file),
+                                                    );
+                                                    setOpenImageDialog(true);
+                                                }}
+                                            />
+                                        ) : (
+                                            image.file && (
+                                                <img
+                                                    src={URL.createObjectURL(image.file)}
+                                                    alt={image.file.name}
+                                                    style={{
+                                                        width: 120,
+                                                        height: 160,
+                                                        objectFit: 'cover',
+                                                        borderRadius: 6,
+                                                        marginBottom: 8,
+                                                        border: '1px solid #e0e0e0',
+                                                    }}
+                                                    onClick={() => {
+                                                        setCurrentImageUrl(
+                                                            image.imageUrl || URL.createObjectURL(image.file),
+                                                        );
+                                                        setOpenImageDialog(true);
+                                                    }}
+                                                />
+                                            )
+                                        )}
 
-                                    {/* Trường nhập số thứ tự ảnh */}
-                                    <TextField
-                                        fullWidth
-                                        variant="filled"
-                                        type="number"
-                                        label="Image Number"
-                                        value={image.imageNumber === null ? '' : image.imageNumber} // Hiển thị rỗng nếu chưa có số
-                                        onChange={(e) =>
-                                            handleImageChange(index, 'imageNumber', parseInt(e.target.value) || null)
-                                        } // Chuyển sang số nguyên
-                                    />
-                                    {/* Nút xóa ảnh */}
-                                    <Button variant="contained" color="error" onClick={() => handleRemoveImage(index)}>
-                                        <RemoveCircleOutlinedIcon /> {/* Sử dụng icon */}
-                                    </Button>
-                                </Box>
-                            ))}
-
+                                        {/* Trường nhập số thứ tự ảnh */}
+                                        <TextField
+                                            variant="filled"
+                                            type="number"
+                                            label="Image Number"
+                                            value={image.imageNumber === null ? '' : image.imageNumber}
+                                            onChange={(e) =>
+                                                handleImageChange(
+                                                    index,
+                                                    'imageNumber',
+                                                    parseInt(e.target.value) || null,
+                                                )
+                                            }
+                                            size="small"
+                                        />
+                                        {/* Nút xóa ảnh */}
+                                        <Button
+                                            variant="contained"
+                                            color="error"
+                                            size="small"
+                                            onClick={() => handleRemoveImage(index)}
+                                            sx={{ minWidth: 0, width: 32, height: 32 }}
+                                        >
+                                            <RemoveCircleOutlinedIcon />
+                                        </Button>
+                                    </Box>
+                                ))}
+                            </Box>
                             {/* Nút tải lên file ảnh */}
                             <Button
-                                component="label" // Sử dụng label để liên kết với input file ẩn
+                                component="label"
                                 variant="contained"
                                 color="primary"
                                 startIcon={<CloudUploadOutlinedIcon />}
-                                sx={{ mr: 2 }} // Thêm khoảng cách
+                                sx={{ mr: 2 }}
                             >
                                 Upload Images
-                                {/* Input file ẩn */}
                                 <VisuallyHiddenInput type="file" multiple onChange={handleFileChange} />
                             </Button>
-
-                            {/* Có thể giữ lại nút "Add New Image" nếu muốn tùy chọn nhập URL thủ công */}
-                            {/* <Button variant="contained" color="primary" onClick={handleAddImage}>
-                                Add New Image (Manual URL)
-                            </Button> */}
                         </Box>
                     </form>
                 )}
             </Formik>
+            {/* Dialog xem chi tiết ảnh */}
+            <Dialog open={openImageDialog} onClose={() => setOpenImageDialog(false)} maxWidth="md">
+                <Box position="relative">
+                    <IconButton
+                        onClick={() => setOpenImageDialog(false)}
+                        sx={{
+                            position: 'absolute',
+                            top: 8,
+                            right: 8,
+                            zIndex: 1,
+                            color: '#fff',
+                            background: 'rgba(0,0,0,0.3)',
+                        }}
+                    >
+                        <CloseIcon />
+                    </IconButton>
+                    <img
+                        src={currentImageUrl}
+                        alt="Preview"
+                        style={{
+                            maxWidth: '90vw',
+                            maxHeight: '80vh',
+                            display: 'block',
+                            margin: 'auto',
+                            borderRadius: 8,
+                        }}
+                    />
+                </Box>
+            </Dialog>
+            {/* <Snackbar
+                open={successOpen}
+                autoHideDuration={2000}
+                onClose={() => setSuccessOpen(false)}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            >
+                <Alert severity="success" sx={{ width: '100%' }}>
+                    Lưu chapter thành công!
+                </Alert>
+            </Snackbar> */}
         </Box>
     );
 }
