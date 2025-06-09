@@ -30,7 +30,7 @@ import CloseIcon from '@mui/icons-material/Close';
 
 // Validation schema ( giữ nguyên hoặc điều chỉnh nếu cần cho các trường khác)
 const storySchema = yup.object().shape({
-    title: yup.string().required('Title is required'),
+    chapterNumber: yup.string().required('Chapter number is required'),
     // Các trường validation khác nếu có
 });
 
@@ -139,17 +139,12 @@ function EditChapter() {
     const handleRemoveImage = (index) => {
         const imageToRemove = images[index];
         if (imageToRemove.chapterImageId) {
-            // Nếu là ảnh cũ từ DB, thêm chapterImageId vào danh sách xóa
             setRemovedImages([...removedImages, imageToRemove.chapterImageId]);
         }
-        // Loại bỏ ảnh (cũ hoặc mới) khỏi danh sách hiển thị
         const updatedImages = images.filter((_, i) => i !== index);
-        // Cập nhật lại state images
         setImages(updatedImages);
     };
 
-    // Handle form submission
-    // Handle form submission
     const handleFormSubmit = async (values) => {
         setIsSubmitting(true);
         try {
@@ -159,7 +154,7 @@ function EditChapter() {
 
             let uploadedImagesData = []; // Danh sách dữ liệu ảnh mới đã upload (chứa imageUrl và imageNumber)
 
-            // 1. Tải lên các file mới nếu có
+            // Tải lên các file mới nếu có
             if (newImagesToUpload.length > 0) {
                 const formData = new FormData();
                 newImagesToUpload.forEach((img) => {
@@ -183,7 +178,7 @@ function EditChapter() {
                 }));
             }
 
-            // 2. Xử lý form submission dựa trên action (edit/add)
+            // Xử lý form submission dựa trên action (edit/add)
             if (action === 'edit') {
                 // --- Logic cho EDIT ---
 
@@ -232,10 +227,6 @@ function EditChapter() {
 
                 await axios.put(`http://localhost:8080/chapterimages/batch-update`, existingImages);
 
-                // Handle deletion of old images marked for removal
-                // await Promise.all(
-                //     removedImages.map((imageId) => axios.delete(`http://localhost:8080/chapterimages/${imageId}`)),
-                // );
                 // Xóa file ảnh cloud nếu có
                 if (removedImages.length > 0 && imagesBackup.length > 0) {
                     const imagesToDelete = imagesBackup.filter(
@@ -261,8 +252,6 @@ function EditChapter() {
                 navigate(`/storydetail?id=${values.storyId}`);
             } else {
                 // action === 'add'
-                // --- Logic for ADD (NEW) ---
-
                 // Prepare chapter data *without* images initially
                 const chapterDataWithoutImages = {
                     chapterNumber: values.chapterNumber,
@@ -271,8 +260,7 @@ function EditChapter() {
                     // Add other chapter fields if necessary, but exclude the 'images' list for the initial POST
                 };
 
-                // 3. Create the new chapter
-                // Giả định API POST /chapters trả về đối tượng chapter đã tạo bao gồm chapterId
+                // Create the new chapter
                 const createChapterResponse = await axios.post(
                     'http://localhost:8080/chapters',
                     chapterDataWithoutImages,
@@ -281,7 +269,7 @@ function EditChapter() {
                 const newChapter = createChapterResponse.data;
                 const newChapterId = newChapter.chapterId; // Lấy ID của chapter vừa tạo
 
-                // 4. Nếu có ảnh mới được upload và chapter đã tạo thành công, gọi API batch để thêm ảnh
+                //Nếu có ảnh mới được upload và chapter đã tạo thành công, gọi API batch để thêm ảnh
                 if (uploadedImagesData.length > 0 && newChapterId) {
                     // Chuẩn bị request DTOs cho API batch sử dụng ID chapter mới
                     const batchRequestDTOs = uploadedImagesData.map((img) => ({
@@ -312,7 +300,12 @@ function EditChapter() {
                 title={action === 'edit' ? 'EDIT CHAPTER' : 'CREATE CHAPTER'}
                 subtitle={action === 'edit' ? 'Edit an Existing Chapter' : 'Create a New Chapter'}
             />
-            <Formik onSubmit={handleFormSubmit} initialValues={initialValues} enableReinitialize>
+            <Formik
+                onSubmit={handleFormSubmit}
+                initialValues={initialValues}
+                validationSchema={storySchema}
+                enableReinitialize
+            >
                 {({ values, errors, touched, handleBlur, handleChange, handleSubmit }) => (
                     <form onSubmit={handleSubmit}>
                         <Backdrop
@@ -362,19 +355,6 @@ function EditChapter() {
                                 helperText={touched.title && errors.title}
                                 sx={{ gridColumn: 'span 4' }}
                             />
-                            {/* Thêm trường storyId nếu cần hiển thị hoặc chỉnh sửa */}
-                            {/* <TextField
-                                fullWidth
-                                variant="filled"
-                                type="text"
-                                label="Story ID"
-                                onBlur={handleBlur}
-                                onChange={handleChange}
-                                value={values.storyId}
-                                name="storyId"
-                                InputProps={{ readOnly: true }} // Thường storyId sẽ không cho chỉnh sửa
-                                sx={{ gridColumn: 'span 4' }}
-                            /> */}
                         </Box>
 
                         {/* Image Management Section */}

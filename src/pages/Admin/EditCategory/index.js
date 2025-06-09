@@ -117,6 +117,9 @@ function EditCategory() {
                                 error={!!touched.category_description && !!errors.category_description}
                                 helperText={touched.category_description && errors.category_description}
                                 sx={{ gridColumn: 'span 4' }}
+                                multiline
+                                minRows={4}
+                                maxRows={10}
                             />
                         </Box>
                     </form>

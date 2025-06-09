@@ -155,7 +155,7 @@ const Header = ({ dark, darkMode, onOpenLogin, onOpenRegister }) => {
                                             background: '#fff',
                                         }}
                                     />
-                                    <span>{loggedInUser.username}</span>
+                                    <span className="user-name">{loggedInUser.username}</span>
                                 </div>
                                 {showUserMenu && (
                                     <ul className="user-menu">
@@ -192,6 +192,26 @@ const Header = ({ dark, darkMode, onOpenLogin, onOpenRegister }) => {
                                     onFocus={() => search && setShowDropdown(true)}
                                     autoComplete="off"
                                 />
+                                <button
+                                    type="button"
+                                    className="search-icon-btn"
+                                    onClick={handleSearchClick}
+                                    style={{
+                                        position: 'absolute',
+                                        right: 8,
+                                        top: '50%',
+                                        transform: 'translateY(-50%)',
+                                        background: 'none',
+                                        border: 'none',
+                                        cursor: 'pointer',
+                                        padding: 0,
+                                        color: '#6e6dfb',
+                                        fontSize: 18,
+                                    }}
+                                    tabIndex={-1}
+                                >
+                                    <FontAwesomeIcon icon={faMagnifyingGlass} />
+                                </button>
                                 {/* Bỏ nút tìm kiếm */}
                                 {showDropdown && suggestions.length > 0 && (
                                     <div className="search-suggestions-container">
@@ -296,12 +316,32 @@ const Header = ({ dark, darkMode, onOpenLogin, onOpenRegister }) => {
                         </ul>
 
                         {/* Mobile Search Toggle (remains in header-bottom) */}
-                        <input id="showsearch" type="checkbox" role="button" />
+                        {/* <input id="showsearch" type="checkbox" role="button" />
                         <label className="showsearch" htmlFor="showsearch">
                             <FontAwesomeIcon icon={faMagnifyingGlass} />
-                        </label>
+                        </label> */}
 
                         {/* Mobile Search Input (remains in header-bottom) */}
+
+                        {/* Mobile Dark mode toggle (moved back to header-bottom) */}
+                        <div className="darkmode-toggle mobile-darkmode-toggle">
+                            {' '}
+                            {/* Added mobile-darkmode-toggle class */}
+                            <input
+                                type="checkbox"
+                                name="darkmode"
+                                id="darkmode-mobile" // Changed ID to avoid conflict
+                                onChange={darkMode}
+                                checked={dark ? 'true' : ''}
+                            />
+                            <label htmlFor="darkmode-mobile" className="mode">
+                                {' '}
+                                {/* Updated htmlFor */}
+                                <FontAwesomeIcon icon={faMoon} />
+                                <FontAwesomeIcon icon={faSun} />
+                                <div className="toggle"></div>
+                            </label>
+                        </div>
                         <div className="search mobile-search">
                             <div className="search-box" style={{ position: 'relative' }}>
                                 <input
@@ -314,6 +354,26 @@ const Header = ({ dark, darkMode, onOpenLogin, onOpenRegister }) => {
                                     onFocus={() => search && setShowDropdown(true)}
                                     autoComplete="off"
                                 />
+                                <button
+                                    type="button"
+                                    className="search-icon-btn"
+                                    onClick={handleSearchClick}
+                                    style={{
+                                        position: 'absolute',
+                                        right: 8,
+                                        top: '50%',
+                                        transform: 'translateY(-50%)',
+                                        background: 'none',
+                                        border: 'none',
+                                        cursor: 'pointer',
+                                        padding: 0,
+                                        color: '#6e6dfb',
+                                        fontSize: 18,
+                                    }}
+                                    tabIndex={-1}
+                                >
+                                    <FontAwesomeIcon icon={faMagnifyingGlass} />
+                                </button>
                                 {/* Bỏ nút tìm kiếm */}
                                 {showDropdown && suggestions.length > 0 && (
                                     <div className="search-suggestions-container">
@@ -354,26 +414,6 @@ const Header = ({ dark, darkMode, onOpenLogin, onOpenRegister }) => {
                                     </div>
                                 )}
                             </div>
-                        </div>
-
-                        {/* Mobile Dark mode toggle (moved back to header-bottom) */}
-                        <div className="darkmode-toggle mobile-darkmode-toggle">
-                            {' '}
-                            {/* Added mobile-darkmode-toggle class */}
-                            <input
-                                type="checkbox"
-                                name="darkmode"
-                                id="darkmode-mobile" // Changed ID to avoid conflict
-                                onChange={darkMode}
-                                checked={dark ? 'true' : ''}
-                            />
-                            <label htmlFor="darkmode-mobile" className="mode">
-                                {' '}
-                                {/* Updated htmlFor */}
-                                <FontAwesomeIcon icon={faMoon} />
-                                <FontAwesomeIcon icon={faSun} />
-                                <div className="toggle"></div>
-                            </label>
                         </div>
                     </div>
                 </div>

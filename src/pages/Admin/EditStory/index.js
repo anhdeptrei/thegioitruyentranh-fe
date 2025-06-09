@@ -256,6 +256,9 @@ function EditStory() {
                                 error={!!touched.description && !!errors.description}
                                 helperText={touched.description && errors.description}
                                 sx={{ gridColumn: 'span 4' }}
+                                multiline
+                                minRows={4}
+                                maxRows={10}
                             />
                             <FormControl fullWidth sx={{ gridColumn: 'span 4' }}>
                                 <Autocomplete
@@ -385,31 +388,7 @@ function EditStory() {
                                     />
                                 </Button>
                             </Box>
-                            {/* {values.cover_image && (
-                                <Box gridColumn="span 4" display="flex" position="relative">
-                                    <img
-                                        alt="Cover"
-                                        width="250px"
-                                        src={values.cover_image}
-                                        style={{ borderRadius: '8px' }}
-                                    />
-                                    <Button
-                                        size="small"
-                                        variant="contained"
-                                        color="secondary"
-                                        onClick={() => setFieldValue('cover_image', '')}
-                                        style={{
-                                            backgroundColor: '#f44336', // Màu đỏ cho nút Remove
-                                            height: '26px',
-                                        }}
-                                        sx={{
-                                            minWidth: '40px', // Đảm bảo kích thước nhỏ gọn
-                                        }}
-                                    >
-                                        <RemoveCircleOutlinedIcon />
-                                    </Button>
-                                </Box>
-                            )} */}
+
                             {(preview || values.cover_image) && (
                                 <Box gridColumn="span 4" display="flex" position="relative">
                                     <img

@@ -131,12 +131,6 @@ function EditUsers() {
             <Formik
                 // onSubmit={handleFormSubmit}
                 onSubmit={async (values) => {
-                    // // Kiểm tra nếu avatar không có giá trị, đặt thành null
-                    // if (!values.avatar) {
-                    //     values.avatar = null;
-                    // }
-                    // console.log('Form values:', values); // Hiển thị tất cả các giá trị đã nhập trong form
-                    // handleFormSubmit(values); // Gọi hàm xử lý gửi form
                     let avatarUrl = values.avatar;
 
                     // Nếu có file mới, upload lên cloud
@@ -237,6 +231,9 @@ function EditUsers() {
                                 error={!!touched.detail && !!errors.detail}
                                 helperText={touched.detail && errors.detail}
                                 sx={{ gridColumn: 'span 4' }}
+                                multiline
+                                minRows={4}
+                                maxRows={10}
                             />
                             <TextField
                                 fullWidth
