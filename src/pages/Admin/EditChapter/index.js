@@ -110,6 +110,7 @@ function EditChapter() {
     // Handle file input change
     const handleFileChange = (event) => {
         const selectedFiles = Array.from(event.target.files);
+        console.log('selectedFiles', selectedFiles);
         const currentMax =
             images.length > 0
                 ? Math.max(
@@ -492,8 +493,8 @@ function EditChapter() {
                         src={currentImageUrl}
                         alt="Preview"
                         style={{
-                            maxWidth: '90vw',
-                            maxHeight: '80vh',
+                            maxWidth: '200vw',
+                            // maxHeight: '80vh',
                             display: 'block',
                             margin: 'auto',
                             borderRadius: 8,

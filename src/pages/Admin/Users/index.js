@@ -158,7 +158,7 @@ function Users() {
                 </Button>
             </Box>
             <Box
-                height="75vh"
+                height="auto"
                 sx={{
                     '& .MuiDataGrid-root': {
                         border: 'none',
@@ -186,6 +186,13 @@ function Users() {
                     rows={data}
                     columns={columns}
                     getRowId={(row) => row.user_id} // Xác định `user_id` làm `id`
+                    initialState={{
+                        pagination: {
+                            paginationModel: { pageSize: 7, page: 0 },
+                        },
+                    }}
+                    pageSizeOptions={[7]}
+                    pagination
                 />
             </Box>
         </Box>

@@ -12,6 +12,7 @@ import ChapterList from '../ChapterList';
 import NotFoundPages from '../Notfound/notFoundPages';
 import swal from 'sweetalert';
 import ReviewSection from '../ReviewSection';
+import { faShare } from '@fortawesome/free-solid-svg-icons';
 
 const SeriesDetail = ({ series }) => {
     const id = series.story_id; //id truyen
@@ -69,7 +70,6 @@ const SeriesDetail = ({ series }) => {
             // If user is logged in, call backend API to follow
             console.log(`Attempting to follow storyId: ${id} for user: ${loggedInUser.userId}`);
             try {
-                // *** IMPORTANT: Replace with your actual backend follow API endpoint ***
                 // Assuming a POST request to /users/{userId}/follows with storyId in body
                 const response = await fetch(`http://localhost:8080/follows`, {
                     method: 'POST',
@@ -84,7 +84,6 @@ const SeriesDetail = ({ series }) => {
                 if (response.ok) {
                     console.log('Follow successful on backend.');
                     // Backend should ideally return the updated user object or the new follow object.
-                    // If backend returns the updated user object with the new follow added:
 
                     const newFollow = await response.json();
                     try {
@@ -266,7 +265,13 @@ const SeriesDetail = ({ series }) => {
         shortHistory = filterHistory.sort((a, b) => new Date(b.readDate || b.date) - new Date(a.readDate || a.date));
     }
     console.log('shortHistory', shortHistory);
+    // chia sẻ truyện
+    const shareUrl = window.location.href;
+    const groupShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
 
+    const shareToGroup = () => {
+        window.open(groupShareUrl, '_blank', 'noopener,noreferrer');
+    };
     return (
         <div className="series">
             {series.error && <NotFoundPages />}
@@ -281,24 +286,35 @@ const SeriesDetail = ({ series }) => {
                                 <div className="series-info">
                                     <div className="series-title">
                                         <h3>{title}</h3>
+
                                         <div className="favorite">
                                             {/* Use isFollowed state to conditionally render buttons */}
                                             {!isFollowed ? (
-                                                // Show "Theo dõi" button if not followed
-                                                <button onClick={() => addBookmark()} disabled={loadingFollow}>
-                                                    <FontAwesomeIcon icon={faHeart} />{' '}
-                                                    {loadingFollow ? 'Đang theo dõi...' : 'Theo dõi'}
-                                                </button>
+                                                <>
+                                                    {/* <button className="share-btn" onClick={shareToGroup}>
+                                                        <FontAwesomeIcon icon={faShare} /> Chia sẻ
+                                                    </button> */}
+                                                    {/* Show "Theo dõi" button if not followed */}
+                                                    <button onClick={() => addBookmark()} disabled={loadingFollow}>
+                                                        <FontAwesomeIcon icon={faHeart} />{' '}
+                                                        {loadingFollow ? 'Đang theo dõi...' : 'Theo dõi'}
+                                                    </button>
+                                                </>
                                             ) : (
-                                                // Show "Bỏ theo dõi" button if followed
-                                                <button
-                                                    className="remove"
-                                                    onClick={() => removeBookmark()}
-                                                    disabled={loadingFollow}
-                                                >
-                                                    <FontAwesomeIcon icon={faXmark} />{' '}
-                                                    {loadingFollow ? 'Đang bỏ theo dõi...' : 'Bỏ theo dõi'}
-                                                </button>
+                                                <>
+                                                    {/* <button className="share-btn" onClick={shareToGroup}>
+                                                        <FontAwesomeIcon icon={faShare} /> Chia sẻ
+                                                    </button> */}
+                                                    {/* Show "Bỏ theo dõi" button if followed */}
+                                                    <button
+                                                        className="remove"
+                                                        onClick={() => removeBookmark()}
+                                                        disabled={loadingFollow}
+                                                    >
+                                                        <FontAwesomeIcon icon={faXmark} />{' '}
+                                                        {loadingFollow ? 'Đang bỏ theo dõi...' : 'Bỏ theo dõi'}
+                                                    </button>
+                                                </>
                                             )}
                                         </div>
                                         {shortHistory.length !== 0 && (

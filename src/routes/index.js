@@ -28,6 +28,7 @@ import Supportdetail from '~/pages/Admin/Supportdetail';
 import NotFoundPages from '~/components/Notfound/notFoundPages';
 import GlobalStylesAdmin from '~/components/GlobalStyles/admin/GlobalStylesAdmin';
 import GlobalStylesClient from '~/components/GlobalStyles/client/GlobalStylesClient';
+import BulkAddChapter from '~/pages/Admin/BulkAddChapter';
 
 //public route
 const publicRoutes = [
@@ -88,6 +89,13 @@ const publicRoutes = [
     {
         path: '/edit-chapter',
         component: EditChapter,
+        layout: AdminDefaultLayout,
+        globle: GlobalStylesAdmin,
+        role: 'admin',
+    },
+    {
+        path: '/bulk-add-chapter',
+        component: BulkAddChapter,
         layout: AdminDefaultLayout,
         globle: GlobalStylesAdmin,
         role: 'admin',

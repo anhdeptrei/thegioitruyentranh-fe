@@ -14,6 +14,13 @@ const Series = () => {
                 <Helmet>
                     <title>{series.title} - thế giới truyện tranh</title>
                     <meta name="description" content={`Đọc ` + series.title + ` trên thế giới truyện tranh`} />
+                    <meta property="og:title" content={series.title} />
+                    <meta
+                        property="og:description"
+                        content={series.description?.replace(/<[^>]+>/g, '').slice(0, 150) || series.title}
+                    />
+                    <meta property="og:image" content={series.cover_image} />
+                    <meta property="og:url" content={window.location.href} />
                 </Helmet>
             )}
             {error && (

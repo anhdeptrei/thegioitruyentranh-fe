@@ -2544,3 +2544,64 @@ p {
     border-left: 4px solid #6e6dfb;
     box-shadow: 0 1px 4px rgba(110, 109, 251, 0.13);
 }
+.custom-footer {
+    background: #3b3c4c;
+    color: #ccc;
+    text-align: center;
+    padding: 24px 0 16px 0;
+    border-top: 5px solid #45475a;
+    margin-top: 40px;
+}
+.custom-footer-text {
+    font-size: 16px;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+.custom-footer-icons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 18px;
+}
+.custom-footer-icons a {
+    display: inline-flex;
+    align-items: center;
+    transition: transform 0.2s;
+}
+.custom-footer-icons a:hover {
+    transform: scale(1.15);
+    opacity: 0.85;
+}
+.custom-footer-phone {
+    color: #43a047;
+    font-size: 18px;
+    font-weight: bold;
+    margin-left: 8px;
+    letter-spacing: 1px;
+}
+
+// ...existing code...
+.favorite .share-btn {
+    background: #1877f2; // Màu Facebook
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-right: 10px;
+    transition: 0.2s;
+}
+.favorite .share-btn:hover {
+    background: #145db2;
+    color: #fff;
+}
+// ...existing code...
+.theme-dark .favorite .share-btn {
+    background: #1877f2;
+    color: #fff;
+}
+.theme-dark .favorite .share-btn:hover {
+    background: #145db2;
+    color: #fff;
+}

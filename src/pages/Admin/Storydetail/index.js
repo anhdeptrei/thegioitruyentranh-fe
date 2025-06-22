@@ -43,8 +43,8 @@ function Storydetail() {
 
     const columns = [
         { field: 'chapterId', headerName: 'ID', flex: 1 }, // ID của truyện
-        { field: 'title', headerName: 'Title', flex: 2 }, // Tiêu đề truyện
-        { field: 'chapterNumber', headerName: 'Chapter Number', flex: 1 }, // Lượt yêu thích
+        // { field: 'title', headerName: 'Title', flex: 2 }, // Tiêu đề truyện
+        { field: 'chapterNumber', headerName: 'Chapter Number', flex: 2 }, // Lượt yêu thích
         {
             field: 'createAt',
             headerName: 'Created At',
@@ -98,6 +98,9 @@ function Storydetail() {
     };
     const handleAddChapter = (row) => {
         navigate(`/edit-chapter?action=add&id=${storyData.story_id}`); // Chuyển đến trang thêm chương mới
+    };
+    const handleBulkAddChapter = () => {
+        navigate(`/bulk-add-chapter?storyId=${storyData.story_id}`);
     };
 
     return (
@@ -159,19 +162,35 @@ function Storydetail() {
                             <Typography variant="h5" fontWeight="bold">
                                 Chapters
                             </Typography>
-                            <Button
-                                variant="contained"
-                                sx={{
-                                    backgroundColor: colors.blueAccent[700],
-                                    color: colors.grey[100],
-                                    '&:hover': {
-                                        backgroundColor: colors.blueAccent[600],
-                                    },
-                                }}
-                                onClick={handleAddChapter} // Hàm xử lý thêm chương mới
-                            >
-                                Thêm chương mới
-                            </Button>
+                            <Box>
+                                <Button
+                                    variant="contained"
+                                    sx={{
+                                        backgroundColor: colors.blueAccent[700],
+                                        color: colors.grey[100],
+                                        '&:hover': {
+                                            backgroundColor: colors.blueAccent[600],
+                                        },
+                                    }}
+                                    onClick={handleAddChapter} // Hàm xử lý thêm chương mới
+                                >
+                                    Thêm chương mới
+                                </Button>
+                                <Button
+                                    variant="contained"
+                                    sx={{
+                                        marginLeft: '10px',
+                                        backgroundColor: colors.blueAccent[700],
+                                        color: colors.grey[100],
+                                        '&:hover': {
+                                            backgroundColor: colors.blueAccent[600],
+                                        },
+                                    }}
+                                    onClick={handleBulkAddChapter} // Hàm xử lý thêm nhiều chương mới
+                                >
+                                    Thêm nhiều chương
+                                </Button>
+                            </Box>
                         </Box>
                     </Box>
                     <Box
@@ -202,9 +221,13 @@ function Storydetail() {
                             getRowId={(row) => row.chapterId}
                             loading={loading}
                             error={error}
-                            pageSize={5} // Số hàng mặc định hiển thị trên mỗi trang
-                            rowsPerPageOptions={[5, 10, 20]} // Các tùy chọn số hàng hiển thị
-                            pagination // Kích hoạt phân trang
+                            initialState={{
+                                pagination: {
+                                    paginationModel: { pageSize: 5, page: 0 },
+                                },
+                            }}
+                            pageSizeOptions={[5]}
+                            pagination
                             sortModel={[
                                 { field: 'chapterNumber', sort: 'asc' }, // Sắp xếp theo chapterNumber tăng dần
                             ]}

@@ -16,7 +16,9 @@ const ChapterList = ({ chapters, id }) => {
                             key={index}
                         >
                             <div className="chapter">
-                                <span className="ch-title">Chapter {chapter.chapterNumber}</span>
+                                <span className="ch-title">
+                                    Chapter {chapter.chapterNumber} {chapter.title && `: ${chapter.title}`}
+                                </span>
                             </div>
                         </Link>
                     ))}

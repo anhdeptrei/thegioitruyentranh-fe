@@ -81,7 +81,7 @@ function Support() {
         <Box m="20px">
             <Header title="Hỗ trợ người dùng" subtitle="supporting users" />
             <Box
-                height="75vh"
+                height="auto"
                 sx={{
                     '& .MuiDataGrid-root': {
                         border: 'none',
@@ -108,6 +108,13 @@ function Support() {
                     getRowId={(row) => row.reportId}
                     loading={loading}
                     error={error}
+                    initialState={{
+                        pagination: {
+                            paginationModel: { pageSize: 7, page: 0 },
+                        },
+                    }}
+                    pageSizeOptions={[7]}
+                    pagination
                 />
             </Box>
         </Box>

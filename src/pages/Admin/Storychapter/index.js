@@ -98,7 +98,7 @@ function Storychapter() {
             <Header title="Quản lí truyện" subtitle="Managing stories" />
 
             <Box
-                height="75vh"
+                height="auto"
                 sx={{
                     '& .MuiDataGrid-root': {
                         border: 'none',
@@ -125,6 +125,13 @@ function Storychapter() {
                     getRowId={(row) => row.story_id}
                     loading={loading}
                     error={error}
+                    initialState={{
+                        pagination: {
+                            paginationModel: { pageSize: 8, page: 0 },
+                        },
+                    }}
+                    pageSizeOptions={[8]}
+                    pagination
                 />
             </Box>
         </Box>

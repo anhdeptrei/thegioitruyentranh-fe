@@ -132,26 +132,6 @@ function EditStory() {
         }
     };
 
-    // const uploadFile = async (file) => {
-    //     const formData = new FormData();
-    //     formData.append('file', file);
-
-    //     try {
-    //         const response = await axios.post('http://localhost:8080/api/files/upload', formData, {
-    //             headers: {
-    //                 'Content-Type': 'multipart/form-data',
-    //             },
-    //         });
-    //         setSelectedImage(response.data); // Lưu URL của file đã upload
-    //         console.log('File uploaded successfully:', response.data);
-    //         console.log('File upload response:', selectedImage); // Log toàn bộ phản hồi từ server
-    //         return response.data; // Trả về URL của file
-    //     } catch (error) {
-    //         console.error('Error uploading file:', error);
-    //         alert('Failed to upload file. Please try again.');
-    //     }
-    // };
-
     return (
         <Box margin="20px">
             <Header
